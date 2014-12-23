@@ -12,14 +12,14 @@ import org.encog.neural.pattern.ElmanPattern;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-public class Elmann {
+public class ElmannMainNumbers {
 
     public BasicNetwork createNetwork(int hiddenLayerSize)
     {
         ElmanPattern pattern = new ElmanPattern();
-        pattern.setInputNeurons(11);
+        pattern.setInputNeurons(50);
         pattern.addHiddenLayer(hiddenLayerSize);
-        pattern.setOutputNeurons(11);
+        pattern.setOutputNeurons(50);
         pattern.setActivationFunction(new ActivationSigmoid());
         return (BasicNetwork)pattern.generate();
     }
@@ -58,7 +58,7 @@ public class Elmann {
         }
         return network;
     }
-    Binarizer ls = new Binarizer(11, 0.5, "L1","L2");
+    Binarizer ls = new Binarizer(50, 0.5, "M1","M2","M3","M4","M5");
     BasicNetwork network ;
     public BasicNetwork train() throws IOException {
 
@@ -76,8 +76,8 @@ public class Elmann {
         BasicNetwork regular = (BasicNetwork)network.clone();
         BasicNetwork closedLoop = (BasicNetwork)network.clone();
 
-        regular.clearContext();
-        closedLoop.clearContext();
+//        regular.clearContext();
+//        closedLoop.clearContext();
 
         MLDataSet dataSet = ls.binarize(Paths.get("src/main/resources/fulldata.csv"));
         for (MLDataPair data : dataSet) {
