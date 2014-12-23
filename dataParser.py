@@ -10,10 +10,10 @@ def get_stories(content):
     turnifier = 0
     titles_html = ""
 
-    for div in soup.body.findAll("li", { "class":"lucky-star" }):
-        if (turnifier == 0): 
+    for div in soup.body.findAll("li", { "class": ["ball", "lucky-star"]}):
+        if (turnifier < 6): 
             titles_html +=  div.get_text() + ","
-            turnifier = 1
+            turnifier += 1
         else:
             titles_html += div.get_text() + "\n"
             turnifier = 0

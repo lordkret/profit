@@ -11,8 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.util.kmeans.Centroid;
 import org.supercsv.io.CsvMapReader;
 import org.supercsv.prefs.CsvPreference;
 
@@ -36,23 +38,32 @@ public class LuckyStarBinarizer {
 		for (Entry s : oneRow.entrySet()){
 			binarizedNumbers[Integer.valueOf((String)s.getValue())-1] = 1; 
 		}
-		System.out.println("cr " + csvReader.getLineNumber());
 		dataSet.add(binarizedNumbers);
-		System.out.println("Data " + Arrays.toString(binarizedNumbers));
 		}
 		csvReader.close();
 		file.close();
 		return new BasicMLDataSet(getInputData(), getOutputData());
 	}
+
+	public static final double THRESHOLD = 0.39;
+	public List<Integer> deBinarize(MLData data){
+		final List<Integer> result = Lists.newArrayList();
+		for (Integer i=0; i< data.size();i++){
+			if (data.getData(i) > THRESHOLD){
+				result.add(i+1);
+			}
+		}
+		return result;
+	}
 	
-	private double[][] getOutputData() {
-		List<double[]> output = dataSet.subList(1, dataSet.size()-1);
+	public double[][] getOutputData() {
+		List<double[]> output = dataSet.subList(1, dataSet.size());
 		return (double[][]) output.toArray(new double[output.size()-1][]);
 		
 	}
 
-	private double[][] getInputData(){
-		List<double[]> output = dataSet.subList(0, dataSet.size()-2);
+	public double[][] getInputData(){
+		List<double[]> output = dataSet.subList(0, dataSet.size()-1);
 		return (double[][]) output.toArray(new double[output.size()-1][]);
 	}
 	
