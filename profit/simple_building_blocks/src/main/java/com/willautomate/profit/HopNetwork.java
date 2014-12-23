@@ -2,6 +2,7 @@ package com.willautomate.profit;
 
 
 import com.google.common.collect.Iterables;
+
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
@@ -16,7 +17,7 @@ import java.util.Arrays;
 public class HopNetwork {
 
     HopfieldNetwork network = new HopfieldNetwork(11);
-    LuckyStarBinarizer luckyStarBinarizer = new LuckyStarBinarizer();
+    Binarizer luckyStarBinarizer = new Binarizer(11,0.05,"L1","L2");
 
     public void train() throws IOException {
         final MLDataSet dataSet = luckyStarBinarizer.binarize(Paths.get("src\\test\\resources\\data.csv"));

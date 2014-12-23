@@ -15,7 +15,7 @@ public class FirstNetwork {
 
     MLMethodFactory methodFactory = new MLMethodFactory();
     MLMethod method = methodFactory.create(MLMethodFactory.TYPE_RBFNETWORK,"?->gaussian(c=60)->?",11,11);
-    LuckyStarBinarizer luckyStarBinarizer = new LuckyStarBinarizer();
+    Binarizer luckyStarBinarizer = new Binarizer(11,0.05,"L1","L2");
 
     public void train() throws IOException {
         EncogUtility.trainToError(method,luckyStarBinarizer.binarize(Paths.get("src\\test\\resources\\data.csv")),0.00005);

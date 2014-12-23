@@ -63,11 +63,11 @@ public class Elmann {
         }
         return network;
     }
-    LuckyStarBinarizer ls = new LuckyStarBinarizer();
+    Binarizer ls = new Binarizer(11, 0.5, "L1","L2");
     BasicNetwork network ;
     public BasicNetwork train() throws IOException {
 
-        return train(network,ls.binarize(Paths.get("src\\test\\resources\\data.csv")));
+        return train(network,ls.binarize(Paths.get("src/test/resources/data.csv")));
     }
 
     public void evaluate() throws IOException {
@@ -81,10 +81,10 @@ public class Elmann {
         BasicNetwork regular = (BasicNetwork)network.clone();
         BasicNetwork closedLoop = (BasicNetwork)network.clone();
 
-        regular.clearContext();
-        closedLoop.clearContext();
+//        regular.clearContext();
+//        closedLoop.clearContext();
 
-        MLDataSet dataSet = ls.binarize(Paths.get("src\\test\\resources\\data2.csv"));
+        MLDataSet dataSet = ls.binarize(Paths.get("src/test/resources/data2.csv"));
         for (MLDataPair data : dataSet) {
 
 

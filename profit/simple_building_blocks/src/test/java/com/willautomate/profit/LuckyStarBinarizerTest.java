@@ -23,11 +23,8 @@ public class LuckyStarBinarizerTest {
 		List<String> csvContent = Arrays.asList("L1,L2", "1,7", "8,11", "3,9");
 		Path tmp = Files.createTempFile(".", "csv");
 		Files.write(tmp, csvContent, Charset.defaultCharset());
-		LuckyStarBinarizer binarizer = new LuckyStarBinarizer();
-		Iterator bind = binarizer.binarize(tmp).iterator();
-		while (bind.hasNext())
-			System.out.println(bind.next());
-
+		Binarizer binarizer = new Binarizer(11, 0.05,"L1","L2");
+		binarizer.binarize(tmp);
 		assertThat(binarizer.deBinarize(new BasicMLData(binarizer.getInputData()[0])), equalTo( Arrays.asList(1, 7)));
 	}
 }
