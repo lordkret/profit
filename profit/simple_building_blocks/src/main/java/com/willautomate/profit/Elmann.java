@@ -67,7 +67,7 @@ public class Elmann {
     BasicNetwork network ;
     public BasicNetwork train() throws IOException {
 
-        return train(network,ls.binarize(Paths.get("src/test/resources/data.csv")));
+        return train(network,ls.binarize(Paths.get("src/main/resources/fulldataWithoutLast2.csv")));
     }
 
     public void evaluate() throws IOException {
@@ -81,10 +81,10 @@ public class Elmann {
         BasicNetwork regular = (BasicNetwork)network.clone();
         BasicNetwork closedLoop = (BasicNetwork)network.clone();
 
-//        regular.clearContext();
-//        closedLoop.clearContext();
+        regular.clearContext();
+        closedLoop.clearContext();
 
-        MLDataSet dataSet = ls.binarize(Paths.get("src/test/resources/data2.csv"));
+        MLDataSet dataSet = ls.binarize(Paths.get("src/main/resources/fulldata.csv"));
         for (MLDataPair data : dataSet) {
 
 

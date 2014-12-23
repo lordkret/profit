@@ -24,12 +24,12 @@ public class Binarizer {
 
 	private final int ballsRange;
 	private final double probabilityThreshold;
-	private final String[] headersToUse;
+	private final List<String> headersToUse;
 	
 	public Binarizer(int ballsRange, double probabilityThreshold,String... headersToUse){
 		this.ballsRange = ballsRange;
 		this.probabilityThreshold = probabilityThreshold;
-		this.headersToUse = headersToUse;
+		this.headersToUse = Arrays.asList(headersToUse);
 	}
 	
 	List<double[]> dataSet = Lists.newArrayList();
@@ -37,12 +37,13 @@ public class Binarizer {
 	public MLDataSet binarize(Path csvFile) throws IOException{
 		BufferedReader file = Files.newBufferedReader(csvFile,Charset.defaultCharset());
 		CsvMapReader csvReader = new CsvMapReader(file, CsvPreference.EXCEL_PREFERENCE);
-		csvReader.getHeader(true);
+		String[] allHeaders = csvReader.getHeader(true);
 		double[] binarizedNumbers;
 		Map<String,String> oneRow;
-		while ((oneRow = csvReader.read(headersToUse))!= null){
+		while ((oneRow = csvReader.read(allHeaders))!= null){
 		binarizedNumbers = new double[ballsRange];
 		for (Entry s : oneRow.entrySet()){
+			if (headersToUse.contains(s.getKey().toString()))
 			binarizedNumbers[Integer.valueOf((String)s.getValue())-1] = 1; 
 		}
 		dataSet.add(binarizedNumbers);
