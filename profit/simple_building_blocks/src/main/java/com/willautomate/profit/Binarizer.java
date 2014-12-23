@@ -20,21 +20,28 @@ import org.supercsv.prefs.CsvPreference;
 
 import com.google.common.collect.Lists;
 
-public class LuckyStarBinarizer {
+public class Binarizer {
 
-
+	private final int ballsRange;
+	private final double probabilityThreshold;
+	private final String[] headersToUse;
+	
+	public Binarizer(int ballsRange, double probabilityThreshold,String... headersToUse){
+		this.ballsRange = ballsRange;
+		this.probabilityThreshold = probabilityThreshold;
+		this.headersToUse = headersToUse;
+	}
 	
 	List<double[]> dataSet = Lists.newArrayList();
 	
 	public MLDataSet binarize(Path csvFile) throws IOException{
-		
 		BufferedReader file = Files.newBufferedReader(csvFile,Charset.defaultCharset());
 		CsvMapReader csvReader = new CsvMapReader(file, CsvPreference.EXCEL_PREFERENCE);
-		String[] hd = csvReader.getHeader(true);
+		csvReader.getHeader(true);
 		double[] binarizedNumbers;
 		Map<String,String> oneRow;
-		while ((oneRow = csvReader.read(hd))!= null){
-		binarizedNumbers = new double[11];
+		while ((oneRow = csvReader.read(headersToUse))!= null){
+		binarizedNumbers = new double[ballsRange];
 		for (Entry s : oneRow.entrySet()){
 			binarizedNumbers[Integer.valueOf((String)s.getValue())-1] = 1; 
 		}
@@ -45,11 +52,11 @@ public class LuckyStarBinarizer {
 		return new BasicMLDataSet(getInputData(), getOutputData());
 	}
 
-	public static final double THRESHOLD = 0.39;
+	
 	public List<Integer> deBinarize(MLData data){
 		final List<Integer> result = Lists.newArrayList();
 		for (Integer i=0; i< data.size();i++){
-			if (data.getData(i) > THRESHOLD){
+			if (data.getData(i) > probabilityThreshold){
 				result.add(i+1);
 			}
 		}
