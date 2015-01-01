@@ -14,8 +14,7 @@ import java.nio.file.Paths;
 
 public class Elmann {
 
-    public BasicNetwork createNetwork(int hiddenLayerSize)
-    {
+    public BasicNetwork createNetwork(int hiddenLayerSize) {
         ElmanPattern pattern = new ElmanPattern();
         pattern.setInputNeurons(11);
         pattern.addHiddenLayer(hiddenLayerSize);
