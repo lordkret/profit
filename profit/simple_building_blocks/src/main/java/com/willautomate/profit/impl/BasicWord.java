@@ -1,5 +1,6 @@
 package com.willautomate.profit.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.willautomate.profit.api.Letter;
@@ -18,4 +19,7 @@ public class BasicWord implements Word {
 		return letters.toArray(new Letter[letters.size()]);
 	}
 
+	public BasicWord(Letter<?>... letters){
+		this.letters = Arrays.asList(letters);
+	}
 }
