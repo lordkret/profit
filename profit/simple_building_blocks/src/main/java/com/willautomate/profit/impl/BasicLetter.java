@@ -17,4 +17,8 @@ public class BasicLetter<T> implements Letter<T>{
 	public T[] getRawData(){
 		return Arrays.copyOf(rawData, size());
 	}
+
+	public String toString(){
+		return Arrays.deepToString(rawData);
+	}
 }

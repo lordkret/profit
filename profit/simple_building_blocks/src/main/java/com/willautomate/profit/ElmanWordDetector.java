@@ -20,9 +20,9 @@ public class ElmanWordDetector implements WordsDetector{
 
 
     public static final Double MAX_ERROR = 0.008;
-    public static final int LETTER_SIZE = 11;
+    public static final int LETTER_SIZE = 7;
     
-    public BasicNetwork createNetwork(int hiddenLayerSize) {
+    public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
         ElmanPattern pattern = new ElmanPattern();
         pattern.setInputNeurons(LETTER_SIZE);
         pattern.addHiddenLayer(hiddenLayerSize);
@@ -33,8 +33,9 @@ public class ElmanWordDetector implements WordsDetector{
     
     
 	public void train(Word word) {
+		System.out.println(word.getLetters()[0].size());
 		if (network == null){
-			network = createNetwork(word.size());
+			network = createNetwork(word.getLetters()[0].size(),word.size());
 		}
 		EncogUtility.trainToError(network, WordFactory.toDataSet(word), MAX_ERROR);
 		

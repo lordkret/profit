@@ -3,6 +3,7 @@ package com.willautomate.profit.api;
 import java.util.Arrays;
 import java.util.Objects;
 
+import com.willautomate.profit.impl.BasicLetter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
@@ -35,8 +36,7 @@ public class WordFactory {
 	}
 
 	public static Letter<Double> toLetter(MLData compute) {
-		// TODO Auto-generated method stub
-		return null;
+		return new BasicLetter<Double>(ArrayUtils.toObject(compute.getData()));
 	}
 
 
