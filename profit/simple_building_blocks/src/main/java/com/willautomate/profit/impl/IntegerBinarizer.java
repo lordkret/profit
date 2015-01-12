@@ -15,5 +15,10 @@ public class IntegerBinarizer implements BinarizationMethod<Integer>{
 		return result;
 		
 	}
-	
+
+	@Override
+	public Integer[] debinarize(int bitsSize, Integer... data) {
+		return new Integer[0];
+	}
+
 }

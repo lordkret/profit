@@ -19,8 +19,8 @@ public class ElmanWordDetector implements WordsDetector{
 	private BasicNetwork network;
 
 
-    public static final Double MAX_ERROR = 0.008;
-    public static final int LETTER_SIZE = 7;
+    public static final Double MAX_ERROR = 0.00008;
+    public static final int LETTER_SIZE = 50;
     
     public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
         ElmanPattern pattern = new ElmanPattern();
