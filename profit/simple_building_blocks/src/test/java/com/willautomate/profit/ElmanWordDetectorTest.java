@@ -27,5 +27,9 @@ public class ElmanWordDetectorTest {
         System.out.println(Arrays.deepToString(binarizer.debinarize(5,Arrays.copyOf(network.predict(l2).getRawData(), 50, Double[].class))));
         System.out.println(Arrays.deepToString(binarizer.debinarize(5,Arrays.copyOf(network.predict(l3).getRawData(), 50, Double[].class))));
         System.out.println(Arrays.deepToString(binarizer.debinarize(5,Arrays.copyOf(network.predict(l4).getRawData(), 50, Double[].class))));
+        
+        Letter<Double> veryRandom = new BasicLetter<Double>(binarizer.binarize(50, 4,6,28,31,46));
+        System.out.println(Arrays.deepToString(binarizer.debinarize(5,Arrays.copyOf(network.predict(veryRandom).getRawData(), 50, Double[].class))));
+        
     }
 }

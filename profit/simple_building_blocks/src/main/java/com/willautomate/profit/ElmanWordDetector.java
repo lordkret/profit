@@ -6,7 +6,6 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.pattern.ElmanPattern;
 import org.encog.persist.EncogDirectoryPersistence;
-
 import org.encog.util.simple.EncogUtility;
 
 import com.willautomate.profit.api.Letter;
@@ -19,7 +18,7 @@ public class ElmanWordDetector implements WordsDetector{
 	private BasicNetwork network;
 
 
-    public static final Double MAX_ERROR = 0.00008;
+    public static final Double MAX_ERROR = 0.0000000008;
     public static final int LETTER_SIZE = 50;
     
     public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
