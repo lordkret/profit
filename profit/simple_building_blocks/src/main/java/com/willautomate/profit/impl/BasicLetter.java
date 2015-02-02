@@ -1,8 +1,8 @@
 package com.willautomate.profit.impl;
 
-import java.util.Arrays;
-
 import com.willautomate.profit.api.Letter;
+
+import java.util.Arrays;
 
 public class BasicLetter<T> implements Letter<T>{
 

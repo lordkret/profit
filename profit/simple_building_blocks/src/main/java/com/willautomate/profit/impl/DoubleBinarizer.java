@@ -1,21 +1,13 @@
 package com.willautomate.profit.impl;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.commons.beanutils.ConvertUtils;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.willautomate.profit.api.BinarizationMethod;
+import org.apache.commons.beanutils.ConvertUtils;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class DoubleBinarizer implements BinarizationMethod<Double> {
 
@@ -27,7 +19,7 @@ public class DoubleBinarizer implements BinarizationMethod<Double> {
 			Preconditions.checkArgument(intValue < bitsSize,
 					"data value %s is out of range of binary size %s",
 					collection, bitsSize);
-			result[intValue] = 1D;
+			result[intValue -1] = 1D;
 		}
 		return result;
 	}

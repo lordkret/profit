@@ -1,16 +1,9 @@
 package com.willautomate.profit.api;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.commons.beanutils.ConvertUtils;
+import com.google.common.collect.Lists;
+import com.willautomate.profit.impl.BasicLetter;
+import com.willautomate.profit.impl.BasicWord;
+import com.willautomate.profit.impl.DoubleBinarizer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
@@ -19,10 +12,14 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.supercsv.io.CsvMapReader;
 import org.supercsv.prefs.CsvPreference;
 
-import com.google.common.collect.Lists;
-import com.willautomate.profit.impl.BasicLetter;
-import com.willautomate.profit.impl.BasicWord;
-import com.willautomate.profit.impl.DoubleBinarizer;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class WordFactory {
 

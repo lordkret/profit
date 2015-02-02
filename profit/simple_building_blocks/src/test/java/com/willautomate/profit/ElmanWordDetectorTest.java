@@ -6,8 +6,6 @@ import com.willautomate.profit.api.WordFactory;
 import com.willautomate.profit.impl.BasicLetter;
 import com.willautomate.profit.impl.BasicWord;
 import com.willautomate.profit.impl.DoubleBinarizer;
-
-import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 
 import java.io.IOException;
