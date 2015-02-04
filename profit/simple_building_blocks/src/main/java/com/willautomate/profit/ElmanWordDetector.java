@@ -32,7 +32,6 @@ public class ElmanWordDetector implements WordsDetector{
     
     
 	public void train(Word word) {
-		System.out.println(word.getLetters()[0].size());
 		if (network == null){
 			network = createNetwork(word.getLetters()[0].size(),word.size());
 		}

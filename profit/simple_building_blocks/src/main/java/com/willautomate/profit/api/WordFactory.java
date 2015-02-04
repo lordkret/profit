@@ -31,9 +31,7 @@ public class WordFactory {
 		for (int i = 1; i<= letters.length-1;i++){
 			input[i-1] = ArrayUtils.toPrimitive(letters[i-1].getRawData());
 			ideal[i-1] = ArrayUtils.toPrimitive(letters[i].getRawData());
-			
 		}
-		System.out.println(Arrays.deepToString(input) + Arrays.deepToString(ideal));
 		MLDataSet data = new BasicMLDataSet(input, ideal);
 		return data;
 		
