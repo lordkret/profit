@@ -1,6 +1,7 @@
 package com.willautomate.profit;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -50,11 +51,14 @@ public class ElmanWordDetector implements WordsDetector{
     	Letter<Double> ideal = null;
     	Letter<Double> computed = null;
     	pairingComparison = 0;
+    	Double[] computedData = null;
     	while (((pair = pairs.next())!= null) && result ){
-    		computed = new BasicLetter<Double>(b.debinarize(5, network.compute(pair.getInput()).getData()));
+    		computedData = b.debinarize(5, network.compute(pair.getInput()).getData());
+    		Arrays.sort(computedData);
+    		computed = new BasicLetter<Double>(computedData);
     		ideal = new BasicLetter<Double>(b.debinarize(5,ArrayUtils.toObject(pair.getIdeal().getData())));
+    		System.out.println("Comparing " + computed + " to " + ideal);
     		pairingComparison++;
-//    		System.out.println("got " + ideal + "and " + computed);
     		result = result && ideal.equals(computed);
     	}
     	return result;

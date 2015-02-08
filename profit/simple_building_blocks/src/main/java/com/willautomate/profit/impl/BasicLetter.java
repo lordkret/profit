@@ -32,13 +32,16 @@ public class BasicLetter<T> implements Letter<T>{
 		}
 		@SuppressWarnings("unchecked")
 		final Letter<Double> me = (Letter<Double>) this;
-
+		
 		@SuppressWarnings("unchecked")
-		final Letter<Double> stuff = (Letter<Double>) ob;
-		final Double[] myStuff = b.debinarize(Math.min(5, me.getRawData().length), me.getRawData());
-		@SuppressWarnings("unchecked")
-		Double[] br = stuff.getRawData();
-		final Double[] otherStuff = b.debinarize(Math.min(5, stuff.getRawData().length),stuff.getRawData());
+		final Letter<Double> other = (Letter<Double>) ob;
+		Double[] mePreBinarized = me.getRawData();
+		Double[] otherPreBinarized = other.getRawData();
+		System.out.println(String.format("Pre %s %s", Arrays.deepToString(mePreBinarized),Arrays.deepToString(otherPreBinarized)));
+		final Double[] myStuff = b.debinarize(Math.min(5, mePreBinarized.length), mePreBinarized);
+		
+		final Double[] otherStuff = b.debinarize(Math.min(5, otherPreBinarized.length),otherPreBinarized);
+		System.out.println(String.format("For letter %s got data %s and for %s got data %s",me,Arrays.deepToString(myStuff),other,Arrays.deepToString(otherStuff)));
 		System.out.println("comparing " + Arrays.deepToString(myStuff) + " and " + Arrays.deepToString(otherStuff) + " value: " + Arrays.equals(myStuff, otherStuff));
 		return Arrays.equals(myStuff,otherStuff);
 	}

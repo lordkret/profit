@@ -1,6 +1,8 @@
 package com.willautomate.profit.impl;
 
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.willautomate.profit.api.BinarizationMethod;
@@ -30,38 +32,36 @@ public class DoubleBinarizer implements BinarizationMethod<Double> {
 		return value > 0.8;
 	}
 
-	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
-			Map<K, V> map) {
-		List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
-		Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+	public static List<Double> sortByValue(Map<Integer, Double> map) {
+		List<Map.Entry<Integer, Double>> list = new LinkedList<>(map.entrySet());
+		System.out.println("List pres " + list);
+		Collections.sort(list, new Comparator<Map.Entry<Integer, Double>>() {
 			@Override
-			public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+			public int compare(Map.Entry<Integer, Double> o1, Map.Entry<Integer, Double> o2) {
 				return (o2.getValue()).compareTo(o1.getValue());
 			}
 		});
-		
-		Map<K, V> result = new LinkedHashMap<>();
-		for (Map.Entry<K, V> entry : list) {
-			result.put(entry.getKey(), entry.getValue());
+		System.out.println("List post " + list);
+		List<Double> result = Lists.newArrayList();
+		for (Map.Entry<Integer, Double> entry : list ){
+			result.add(Double.valueOf(entry.getKey()));
 		}
 		return result;
 	}
 
+	
 	public Double[] debinarize(int bitsSize, double... data){
 		return debinarize(bitsSize,ArrayUtils.toObject(data));
 	}
 	public Double[] debinarize(int bitsSize, Double... data) {
 		List<Double> result = Lists.newArrayList();
-		Map<Integer, Double> maxValues = Maps.newHashMap();
+		SortedMap<Integer, Double> maxValues = Maps.newTreeMap();
 		for (int i = 1; i<=data.length;i++){
 			maxValues.put(i,data[i-1]);
 		}
-		maxValues = sortByValue(maxValues);
-		for (Entry<Integer, Double> d : maxValues.entrySet()){
-			result.add(Double.valueOf(d.getKey()));
-		}
-		result =result.subList(0, bitsSize);
-		Collections.sort(result);
+
+		result = sortByValue(maxValues).subList(0, bitsSize);
+		System.out.println("Lamr: " + result);
 		return result.toArray(new Double[bitsSize]);
 	}
 
