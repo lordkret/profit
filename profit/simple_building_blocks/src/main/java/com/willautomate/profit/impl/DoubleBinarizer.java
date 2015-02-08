@@ -18,7 +18,7 @@ public class DoubleBinarizer implements BinarizationMethod<Double> {
 		Arrays.fill(result, 0D);
 		for (String value : collection) {
 			int intValue = (Integer) ConvertUtils.convert(value, Integer.class);
-			Preconditions.checkArgument(intValue < bitsSize,
+			Preconditions.checkArgument(intValue <= bitsSize,
 					"data value %s is out of range of binary size %s",
 					collection, bitsSize);
 			result[intValue -1] = 1D;
@@ -69,7 +69,7 @@ public class DoubleBinarizer implements BinarizationMethod<Double> {
 		Double[] result = new Double[bitsSize];
 		Arrays.fill(result, 0D);
 		for (int value : data) {
-			Preconditions.checkArgument(value < bitsSize,
+			Preconditions.checkArgument(value <= bitsSize,
 					"data value %s is out of range of binary size %s", data,
 					bitsSize);
 			result[value - 1] = 1D;
