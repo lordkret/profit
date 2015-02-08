@@ -37,6 +37,7 @@ public class ElmanWordDetectorTest {
         for(Letter letter: predict.getLetters()){
             System.out.println("Letters: " + Arrays.deepToString(binarizer.debinarize(5,((Letter<Double>) letter).getRawData())) + " Predict: " + Arrays.deepToString(binarizer.debinarize(5,Arrays.copyOf(network.predict(letter).getRawData(), 50, Double[].class))));
         }
+        network.save(Paths.get("yay"));
 
 //        1,3,31,42,46,4,11
 //        5,8,37,47,48,2,3

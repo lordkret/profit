@@ -4,7 +4,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.willautomate.profit.api.BinarizationMethod;
+
 import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -45,6 +47,9 @@ public class DoubleBinarizer implements BinarizationMethod<Double> {
 		return result;
 	}
 
+	public Double[] debinarize(int bitsSize, double... data){
+		return debinarize(bitsSize,ArrayUtils.toObject(data));
+	}
 	public Double[] debinarize(int bitsSize, Double... data) {
 		List<Double> result = Lists.newArrayList();
 		Map<Integer, Double> maxValues = Maps.newHashMap();
