@@ -5,14 +5,11 @@ import java.util.Iterator;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.ml.CalculateScore;
-import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Greedy;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.neural.pattern.ElmanPattern;
 import org.encog.persist.EncogDirectoryPersistence;
@@ -46,15 +43,14 @@ public class ElmanWordDetector implements WordsDetector{
     	boolean result = true;
     	final Iterator<MLDataPair> pairs = data.iterator();
     	MLDataPair pair = null;
-    	final DoubleBinarizer b = new DoubleBinarizer();
     	Letter<Double> ideal = null;
     	Letter<Double> computed = null;
     	pairingComparison = 0;
-    	while (((pair = pairs.next())!= null) && result ){
-    		computed = new BasicLetter<Double>(b.debinarize(5, network.compute(pair.getInput()).getData()));
-    		ideal = new BasicLetter<Double>(b.debinarize(5,ArrayUtils.toObject(pair.getIdeal().getData())));
+    	while (((pair = pairs.next())!= null)  ){
+    		computed = new BasicLetter<Double>(DoubleBinarizer.debinarize(5, network.compute(pair.getInput()).getData()));
+    		ideal = new BasicLetter<Double>(DoubleBinarizer.debinarize(5,ArrayUtils.toObject(pair.getIdeal().getData())));
     		pairingComparison++;
-//    		System.out.println("got " + ideal + "and " + computed);
+    		System.out.println("id " + ideal + " cmp " + computed);
     		result = result && ideal.equals(computed);
     	}
     	return result;
@@ -66,15 +62,16 @@ public class ElmanWordDetector implements WordsDetector{
 		MLDataSet set = WordFactory.toDataSet(word);
 		final MLTrain trainMain = new Backpropagation(network, WordFactory.toDataSet(word),0.000001, 0.0);
 
-		//trainMain.addStrategy(new Greedy());
+		trainMain.addStrategy(new Greedy());
 
 		
 		
 		int epoch = 0;
 		while (!doesRememberEverything(set)) {
-			trainMain.iteration();
-			epoch++;
-			System.out.println("Epoch: " + epoch + " error: " + trainMain.getError() + " pairing comparison " + pairingComparison);
+//			trainMain.iteration();
+//			epoch++;
+//			System.out.println("Epoch: " + epoch + " error: " + trainMain.getError() + " pairing comparison " + pairingComparison);
+			EncogUtility.trainToError(network, set,0.0000008);
 		}
 		System.out.println("Learned after " + epoch + " epochs");
 	}

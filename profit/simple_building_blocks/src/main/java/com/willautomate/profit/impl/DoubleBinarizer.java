@@ -11,9 +11,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class DoubleBinarizer implements BinarizationMethod<Double> {
+public class DoubleBinarizer  {
 
-	public Double[] binarize(int bitsSize, Collection<String> collection) {
+	public static Double[] binarize(int bitsSize, Collection<String> collection) {
 		Double[] result = new Double[bitsSize];
 		Arrays.fill(result, 0D);
 		for (String value : collection) {
@@ -47,10 +47,10 @@ public class DoubleBinarizer implements BinarizationMethod<Double> {
 		return result;
 	}
 
-	public Double[] debinarize(int bitsSize, double... data){
+	public static Double[] debinarize(int bitsSize, double... data){
 		return debinarize(bitsSize,ArrayUtils.toObject(data));
 	}
-	public Double[] debinarize(int bitsSize, Double... data) {
+	public static Double[] debinarize(int bitsSize, Double... data) {
 		List<Double> result = Lists.newArrayList();
 		Map<Integer, Double> maxValues = Maps.newHashMap();
 		for (int i = 1; i<=data.length;i++){
@@ -65,7 +65,7 @@ public class DoubleBinarizer implements BinarizationMethod<Double> {
 		return result.toArray(new Double[bitsSize]);
 	}
 
-	public Double[] binarize(int bitsSize, int... data) {
+	public static Double[] binarize(int bitsSize, int... data) {
 		Double[] result = new Double[bitsSize];
 		Arrays.fill(result, 0D);
 		for (int value : data) {

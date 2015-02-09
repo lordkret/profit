@@ -35,11 +35,7 @@ public class BasicLetter<T> implements Letter<T>{
 
 		@SuppressWarnings("unchecked")
 		final Letter<Double> stuff = (Letter<Double>) ob;
-		final Double[] myStuff = b.debinarize(Math.min(5, me.getRawData().length), me.getRawData());
-		@SuppressWarnings("unchecked")
-		Double[] br = stuff.getRawData();
-		final Double[] otherStuff = b.debinarize(Math.min(5, stuff.getRawData().length),stuff.getRawData());
-		System.out.println("comparing " + Arrays.deepToString(myStuff) + " and " + Arrays.deepToString(otherStuff) + " value: " + Arrays.equals(myStuff, otherStuff));
-		return Arrays.equals(myStuff,otherStuff);
+
+		return Arrays.equals(me.getRawData(),stuff.getRawData());
 	}
 }
