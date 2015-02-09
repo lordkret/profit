@@ -31,7 +31,7 @@ public class ElmanWordDetectorTest {
             startSize++;
             System.out.println("Current word size " + startSize + " \n predicted: " + predicted.toString() + "\n toPredict: " + toPredict.toString());
 
-            Thread.sleep(1000L);
+            Thread.sleep(5000L);
         }
         Word predict = WordFactory.fromCsv(Paths.get("src/main/resources/fulldata.csv"), 5, 10, "M1","M2","M3","M4","M5",null,null);
         for(Letter letter: predict.getLetters()){

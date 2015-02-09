@@ -1,6 +1,6 @@
 package com.willautomate.profit.api;
 
-import static org.junit.Assert.*;
+import java.util.Iterator;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.encog.ml.data.MLDataPair;
@@ -9,8 +9,6 @@ import org.junit.Test;
 
 import com.willautomate.profit.impl.BasicLetter;
 import com.willautomate.profit.impl.BasicWord;
-
-import java.util.Iterator;
 
 public class WordFactoryTest {
 
