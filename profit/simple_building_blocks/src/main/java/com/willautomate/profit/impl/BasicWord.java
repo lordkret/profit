@@ -27,13 +27,12 @@ public class BasicWord implements Word {
 	}
 	
 	public String toString(){
-		final DoubleBinarizer b = new DoubleBinarizer();
 		return String.format("a %s", Joiner.on("\n ").join(Collections2.transform(letters, new Function<Letter, String>() {
 
 			@Override
 			public String apply(Letter input) {
 				Letter<Double> val = input;
-				return Arrays.deepToString(b.debinarize(5, val.getRawData()));
+				return Arrays.deepToString(DoubleBinarizer.debinarize(Math.min(5, val.size()), val.getRawData()));
 			}
 		})));
 	}

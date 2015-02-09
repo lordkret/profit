@@ -1,25 +1,30 @@
 package com.willautomate.profit.impl;
 
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.willautomate.profit.api.BinarizationMethod;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.*;
-import java.util.Map.Entry;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-public class DoubleBinarizer implements BinarizationMethod<Double> {
+public class DoubleBinarizer  {
+	
+	private DoubleBinarizer(){}
 
-	public Double[] binarize(int bitsSize, Collection<String> collection) {
+	public static Double[] binarize(int bitsSize, Collection<String> collection) {
 		Double[] result = new Double[bitsSize];
 		Arrays.fill(result, 0D);
 		for (String value : collection) {
-			int intValue = (Integer) ConvertUtils.convert(value, Integer.class);
+			int intValue = Integer.valueOf(value);
 			Preconditions.checkArgument(intValue <= bitsSize,
 					"data value %s is out of range of binary size %s",
 					collection, bitsSize);
@@ -28,6 +33,10 @@ public class DoubleBinarizer implements BinarizationMethod<Double> {
 		return result;
 	}
 
+	public static Double[] binarize(int bitSize,Double... data){
+		String[] a=Arrays.toString(data).split("[\\[\\]]")[1].split(", ");
+		return binarize(bitSize,Arrays.asList(a));
+	}
 	private boolean isAboveThreshold(Double value) {
 		return value > 0.8;
 	}
@@ -50,10 +59,10 @@ public class DoubleBinarizer implements BinarizationMethod<Double> {
 	}
 
 	
-	public Double[] debinarize(int bitsSize, double... data){
+	public static Double[] debinarize(int bitsSize, double... data){
 		return debinarize(bitsSize,ArrayUtils.toObject(data));
 	}
-	public Double[] debinarize(int bitsSize, Double... data) {
+	public static Double[] debinarize(int bitsSize, Double... data) {
 		List<Double> result = Lists.newArrayList();
 		SortedMap<Integer, Double> maxValues = Maps.newTreeMap();
 		for (int i = 1; i<=data.length;i++){
@@ -65,7 +74,7 @@ public class DoubleBinarizer implements BinarizationMethod<Double> {
 		return result.toArray(new Double[bitsSize]);
 	}
 
-	public Double[] binarize(int bitsSize, int... data) {
+	public static Double[] binarize(int bitsSize, int... data) {
 		Double[] result = new Double[bitsSize];
 		Arrays.fill(result, 0D);
 		for (int value : data) {

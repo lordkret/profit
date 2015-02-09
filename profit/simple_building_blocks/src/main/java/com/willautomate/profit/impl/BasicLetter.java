@@ -26,7 +26,6 @@ public class BasicLetter<T> implements Letter<T>{
 
 	@Override
 	public boolean equals(Object ob){
-		final DoubleBinarizer b = new DoubleBinarizer();
 		if (! ( ob instanceof BasicLetter)){
 			return false;
 		}
@@ -35,14 +34,7 @@ public class BasicLetter<T> implements Letter<T>{
 		
 		@SuppressWarnings("unchecked")
 		final Letter<Double> other = (Letter<Double>) ob;
-		Double[] mePreBinarized = me.getRawData();
-		Double[] otherPreBinarized = other.getRawData();
-		System.out.println(String.format("Pre %s %s", Arrays.deepToString(mePreBinarized),Arrays.deepToString(otherPreBinarized)));
-		final Double[] myStuff = b.debinarize(Math.min(5, mePreBinarized.length), mePreBinarized);
+		return Arrays.deepEquals(me.getRawData(), other.getRawData());
 		
-		final Double[] otherStuff = b.debinarize(Math.min(5, otherPreBinarized.length),otherPreBinarized);
-		System.out.println(String.format("For letter %s got data %s and for %s got data %s",me,Arrays.deepToString(myStuff),other,Arrays.deepToString(otherStuff)));
-		System.out.println("comparing " + Arrays.deepToString(myStuff) + " and " + Arrays.deepToString(otherStuff) + " value: " + Arrays.equals(myStuff, otherStuff));
-		return Arrays.equals(myStuff,otherStuff);
 	}
 }

@@ -15,7 +15,6 @@ import java.util.Arrays;
 
 public class ElmanWordDetectorTest {
 
-    DoubleBinarizer binarizer = new DoubleBinarizer();
     @Test
     public void trainingTest() throws IOException, InterruptedException {
         ElmanWordDetector network = new ElmanWordDetector();
@@ -35,7 +34,7 @@ public class ElmanWordDetectorTest {
         }
         Word predict = WordFactory.fromCsv(Paths.get("src/main/resources/fulldata.csv"), 5, 10, "M1","M2","M3","M4","M5",null,null);
         for(Letter letter: predict.getLetters()){
-            System.out.println("Letters: " + Arrays.deepToString(binarizer.debinarize(5,((Letter<Double>) letter).getRawData())) + " Predict: " + Arrays.deepToString(binarizer.debinarize(5,Arrays.copyOf(network.predict(letter).getRawData(), 50, Double[].class))));
+            System.out.println("Letters: " + Arrays.deepToString(DoubleBinarizer.debinarize(5,((Letter<Double>) letter).getRawData())) + " Predict: " + Arrays.deepToString(DoubleBinarizer.debinarize(5,Arrays.copyOf(network.predict(letter).getRawData(), 50, Double[].class))));
         }
         network.save(Paths.get("yay"));
 

@@ -56,11 +56,10 @@ public class WordFactory {
 		double[] binarizedNumbers;
 		Map<String,String> oneRow;
 		List<String> headersToUse = Arrays.asList(columnsToRead);
-		DoubleBinarizer binarizer = new DoubleBinarizer();
 		int readRows = 0;
 		while ((readRows < rowsToRead)&&(oneRow = csvReader.read(columnsToRead))!= null){
 			if (csvReader.getRowNumber() >= startRow){
-			letters.add(new BasicLetter(binarizer.binarize(50, oneRow.values())));
+			letters.add(new BasicLetter(DoubleBinarizer.binarize(50, oneRow.values())));
 			readRows++;
 			}
 		}

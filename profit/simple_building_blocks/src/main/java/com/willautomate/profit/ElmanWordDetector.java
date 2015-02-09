@@ -47,16 +47,16 @@ public class ElmanWordDetector implements WordsDetector{
     	boolean result = true;
     	final Iterator<MLDataPair> pairs = data.iterator();
     	MLDataPair pair = null;
-    	final DoubleBinarizer b = new DoubleBinarizer();
+    	
     	Letter<Double> ideal = null;
     	Letter<Double> computed = null;
     	pairingComparison = 0;
     	Double[] computedData = null;
     	while (((pair = pairs.next())!= null) && result ){
-    		computedData = b.debinarize(5, network.compute(pair.getInput()).getData());
+    		computedData = DoubleBinarizer.debinarize(5, network.compute(pair.getInput()).getData());
     		Arrays.sort(computedData);
     		computed = new BasicLetter<Double>(computedData);
-    		ideal = new BasicLetter<Double>(b.debinarize(5,ArrayUtils.toObject(pair.getIdeal().getData())));
+    		ideal = new BasicLetter<Double>(DoubleBinarizer.debinarize(5,ArrayUtils.toObject(pair.getIdeal().getData())));
     		System.out.println("Comparing " + computed + " to " + ideal);
     		pairingComparison++;
     		result = result && ideal.equals(computed);
