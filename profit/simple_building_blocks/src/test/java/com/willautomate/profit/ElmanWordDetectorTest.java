@@ -5,7 +5,10 @@ import com.willautomate.profit.api.Word;
 import com.willautomate.profit.api.WordFactory;
 import com.willautomate.profit.impl.BasicLetter;
 import com.willautomate.profit.impl.BasicWord;
+import com.willautomate.profit.impl.BinarizedLetter;
 import com.willautomate.profit.impl.DoubleBinarizer;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -26,9 +29,12 @@ public class ElmanWordDetectorTest {
             network.train(p);
             Letter<Double> toPredict = WordFactory.fromCsv(csv,startSize+1, startSize +1,"M1", "M2", "M3", "M4", "M5", null, null).getLetters()[0];
             Letter<Double> predicted = (Letter<Double>)network.predict(p.getLetters()[p.getLetters().length-1]);
-            wordDone = toPredict.equals(predicted);
+            double[] predictedData = ArrayUtils.toPrimitive(DoubleBinarizer.debinarize(5, predicted.getRawData()));
+            Arrays.sort(predictedData);
+            System.out.println("s " + Arrays.toString(predictedData));
+            wordDone = Arrays.equals(ArrayUtils.toPrimitive(DoubleBinarizer.debinarize(5, toPredict.getRawData())), predictedData);
             startSize++;
-            System.out.println("Current word size " + startSize + " \n predicted: " + predicted.toString() + "\n toPredict: " + toPredict.toString());
+            System.out.println("Current word size " + startSize + " \n toPredict: " + Arrays.toString(DoubleBinarizer.debinarize(5, toPredict.getRawData())) + "\n predicted: " + Arrays.toString(predictedData));
 
             Thread.sleep(5000L);
         }

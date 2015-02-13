@@ -9,26 +9,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class DoubleBinarizer  {
-	
+	private static final Logger log = LoggerFactory.getLogger(DoubleBinarizer.class);
 	private DoubleBinarizer(){}
 
 	public static Double[] binarize(int bitsSize, Collection<String> collection) {
 		Double[] result = new Double[bitsSize];
 		Arrays.fill(result, 0D);
 		for (String value : collection) {
-			int intValue = Integer.valueOf(value);
+			int intValue = (int)Math.floor(Double.valueOf(value));
 			Preconditions.checkArgument(intValue <= bitsSize,
 					"data value %s is out of range of binary size %s",
 					collection, bitsSize);
-			result[intValue -1] = 1D;
+			try {result[intValue -1] = 1D;} 
+			catch (ArrayIndexOutOfBoundsException e){
+				log.error("parsing letter failed {} ",collection);
+				throw e;
+			}
 		}
 		return result;
 	}
@@ -43,14 +48,12 @@ public class DoubleBinarizer  {
 
 	public static List<Double> sortByValue(Map<Integer, Double> map) {
 		List<Map.Entry<Integer, Double>> list = new LinkedList<>(map.entrySet());
-		System.out.println("List pres " + list);
 		Collections.sort(list, new Comparator<Map.Entry<Integer, Double>>() {
 			@Override
 			public int compare(Map.Entry<Integer, Double> o1, Map.Entry<Integer, Double> o2) {
 				return (o2.getValue()).compareTo(o1.getValue());
 			}
 		});
-		System.out.println("List post " + list);
 		List<Double> result = Lists.newArrayList();
 		for (Map.Entry<Integer, Double> entry : list ){
 			result.add(Double.valueOf(entry.getKey()));
@@ -70,7 +73,6 @@ public class DoubleBinarizer  {
 		}
 
 		result = sortByValue(maxValues).subList(0, bitsSize);
-		System.out.println("Lamr: " + result);
 		return result.toArray(new Double[bitsSize]);
 	}
 

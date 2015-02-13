@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import urllib2                                       
 
 def get_page():
-    html = urllib2.urlopen("http://www.euro-millions.com/results-archive-2014") 
+    html = urllib2.urlopen("http://www.euro-millions.com/results-archive-2015") 
     return html
 
 def get_stories(content):

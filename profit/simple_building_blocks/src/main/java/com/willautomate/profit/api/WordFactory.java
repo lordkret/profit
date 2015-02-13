@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.willautomate.profit.impl.BasicLetter;
 import com.willautomate.profit.impl.BasicWord;
 import com.willautomate.profit.impl.DoubleBinarizer;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
@@ -18,6 +19,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +67,7 @@ public class WordFactory {
 		}
 		csvReader.close();
 		file.close();
+		Collections.reverse(letters);
 		Word result = new BasicWord(letters.toArray(new Letter[rowsToRead]));
 		return result;
 	}

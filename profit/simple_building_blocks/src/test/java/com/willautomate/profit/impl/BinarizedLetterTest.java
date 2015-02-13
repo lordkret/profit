@@ -3,16 +3,13 @@ package com.willautomate.profit.impl;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 
 import com.willautomate.profit.api.Letter;
-import com.willautomate.profit.api.LetterFactory;
-import com.willautomate.profit.api.LetterFactory.LetterBuilder;
 
 public class BinarizedLetterTest {
 
