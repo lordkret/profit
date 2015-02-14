@@ -55,11 +55,12 @@ public class ElmanWordDetector implements WordsDetector{
     	pairingComparison = 0;
     	Double[] computedData = null;
     	while (((pair = pairs.next())!= null) && result ){
-    		computedData = DoubleBinarizer.debinarize(5, network.compute(pair.getInput()).getData());
+    	    Letter<Double> toCompute = new BasicLetter<Double>(ArrayUtils.toObject(pair.getInput().getData()));
+    		computedData = DoubleBinarizer.debinarize(5,((Letter<Double>) predict(toCompute)).getRawData());
     		Arrays.sort(computedData);
     		computed = new BasicLetter<Double>(computedData);
     		ideal = new BasicLetter<Double>(DoubleBinarizer.debinarize(5,ArrayUtils.toObject(pair.getIdeal().getData())));
-//    		log.info("Comparing {} to {} ",computed,ideal);
+    		log.info("Comparing {} to {} as effect of {}",computed,ideal,Arrays.toString(DoubleBinarizer.debinarize(5,toCompute.getRawData())));
     		pairingComparison++;
     		result = result && ideal.equals(computed);
     	}
@@ -81,6 +82,7 @@ public class ElmanWordDetector implements WordsDetector{
 			trainMain.iteration();
 			log.info("pairing comparison: {} and error {}",pairingComparison,trainMain.getError());
 		}
+		log.info("pairing comparison: {} and error {}",pairingComparison,trainMain.getError());
 	}
 
 	public Letter<?> predict(Letter<?> lastLetter) {
