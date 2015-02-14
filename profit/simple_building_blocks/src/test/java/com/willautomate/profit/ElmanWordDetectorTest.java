@@ -31,13 +31,16 @@ public class ElmanWordDetectorTest {
             network.train(p);
             Letter<Double> toPredict = WordFactory.fromCsv(csv, startSize + 1, startSize + 1, "M1", "M2", "M3", "M4", "M5", null, null).getLetters()[0];
             Letter<Double> predicted = (Letter<Double>) network.predict(p.getLetters()[p.getLetters().length - 1]);
+            Letter<Double> predictedAgain = (Letter<Double>) network.predict(p.getLetters()[p.getLetters().length - 1]);
             double[] predictedData = ArrayUtils.toPrimitive(DoubleBinarizer.debinarize(5, predicted.getRawData()));
-            Arrays.sort(predictedData);
+            double[] predictedAgainData = ArrayUtils.toPrimitive(DoubleBinarizer.debinarize(5, predictedAgain.getRawData()));
             
+            Arrays.sort(predictedData);
+            Arrays.sort(predictedAgainData);
             wordDone = Arrays.equals(ArrayUtils.toPrimitive(DoubleBinarizer.debinarize(5, toPredict.getRawData())), predictedData);
             startSize++;
             log.info("Current word size " + startSize + " \n toPredict: " + Arrays.toString(DoubleBinarizer.debinarize(5, toPredict.getRawData())) + "\n predicted: "
-                    + Arrays.toString(predictedData));
+                    + Arrays.toString(predictedData) + " and again " + Arrays.toString(predictedAgainData));
 
             Thread.sleep(5000L);
         }
