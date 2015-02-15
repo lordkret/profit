@@ -99,4 +99,8 @@ public class ElmanWordDetector implements WordsDetector{
 		
 	}
 
+	@Override
+	public String toString(){
+	    return String.format("Network %s\n weights %s", network.toString(),network.dumpWeights());
+	}
 }
