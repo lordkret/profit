@@ -9,7 +9,6 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
-import org.encog.ml.train.strategy.Greedy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
@@ -37,7 +36,7 @@ public class ElmanWordDetector implements WordsDetector{
     
     public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
     	hiddenLayerSize = 45;
-        ElmanPattern pattern = new ElmanPattern();
+    	ElmanPattern pattern = new ElmanPattern();
         pattern.setInputNeurons(LETTER_SIZE);
         pattern.addHiddenLayer(hiddenLayerSize);
         pattern.setOutputNeurons(LETTER_SIZE);
@@ -54,7 +53,7 @@ public class ElmanWordDetector implements WordsDetector{
     	Letter<Double> computed = null;
     	pairingComparison = 0;
     	Double[] computedData = null;
-    	while (((pair = pairs.next())!= null) && result ){
+    	while (((pair = pairs.next())!= null) ){
     	    Letter<Double> toCompute = new BasicLetter<Double>(ArrayUtils.toObject(pair.getInput().getData()));
     		computedData = DoubleBinarizer.debinarize(5,((Letter<Double>) predict(toCompute)).getRawData());
     		Arrays.sort(computedData);
@@ -86,6 +85,7 @@ public class ElmanWordDetector implements WordsDetector{
 	}
 
 	public Letter<?> predict(Letter<?> lastLetter) {
+//	    network.getStructure().getFlat().compute(input, output);
 		return WordFactory.toLetter(network.compute(WordFactory.toData(lastLetter)));
 	}
 
