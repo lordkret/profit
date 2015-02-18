@@ -14,7 +14,7 @@ import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.ElmanPattern;
 import org.encog.persist.EncogDirectoryPersistence;
-import org.encog.util.simple.EncogUtility;
+import org.omg.PortableServer.IdAssignmentPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +24,7 @@ import com.willautomate.profit.api.WordFactory;
 import com.willautomate.profit.api.WordsDetector;
 import com.willautomate.profit.impl.BasicLetter;
 import com.willautomate.profit.impl.DoubleBinarizer;
+import com.willautomate.profit.impl.DoubleLetterDistance;
 
 public class ElmanWordDetector implements WordsDetector{
 
@@ -35,7 +36,6 @@ public class ElmanWordDetector implements WordsDetector{
     public static final int LETTER_SIZE = 50;
     
     public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
-    	hiddenLayerSize = 45;
     	ElmanPattern pattern = new ElmanPattern();
         pattern.setInputNeurons(LETTER_SIZE);
         pattern.addHiddenLayer(hiddenLayerSize);
@@ -43,7 +43,6 @@ public class ElmanWordDetector implements WordsDetector{
         pattern.setActivationFunction(new ActivationSigmoid());
         return (BasicNetwork)pattern.generate();
     }
-    private int pairingComparison ;
     private boolean doesRememberEverything(MLDataSet data){
     	boolean result = true;
     	final Iterator<MLDataPair> pairs = data.iterator();
@@ -51,26 +50,23 @@ public class ElmanWordDetector implements WordsDetector{
     	
     	Letter<Double> ideal = null;
     	Letter<Double> computed = null;
-    	pairingComparison = 0;
-    	Double[] computedData = null;
+    	
     	while (((pair = pairs.next())!= null) ){
     	    Letter<Double> toCompute = new BasicLetter<Double>(ArrayUtils.toObject(pair.getInput().getData()));
-    		computedData = DoubleBinarizer.debinarize(5,((Letter<Double>) predict(toCompute)).getRawData());
-    		Arrays.sort(computedData);
-    		computed = new BasicLetter<Double>(computedData);
-    		ideal = new BasicLetter<Double>(DoubleBinarizer.debinarize(5,ArrayUtils.toObject(pair.getIdeal().getData())));
-    		log.info("Comparing {} to {} as effect of {}",computed,ideal,Arrays.toString(DoubleBinarizer.debinarize(5,toCompute.getRawData())));
-    		pairingComparison++;
-    		result = result && ideal.equals(computed);
+    		computed =  (Letter<Double>) predict(toCompute);
+    		ideal = new BasicLetter<Double>(ArrayUtils.toObject(pair.getIdeal().getData()));
+    		result = result && DoubleLetterDistance.calculate(computed, ideal, 5) == 0;
+    		log.info("effect of {}",Arrays.toString(DoubleBinarizer.debinarize(5,toCompute.getRawData())));
     	}
     	return result;
     }
 	public void train(Word word) {
 		if (network == null){
-			network = createNetwork(word.getLetters()[0].size(),word.size());
+			network = createNetwork(word.getLetters()[0].size(),word.size()+5);
 		}
 		
 		MLDataSet set = WordFactory.toDataSet(word);
+
 		final MLTrain trainMain = new ResilientPropagation((ContainsFlat)network, set); 
 //				new Backpropagation(network, WordFactory.toDataSet(word),0.000001, 0.0);
 
@@ -79,9 +75,9 @@ public class ElmanWordDetector implements WordsDetector{
 		while (!doesRememberEverything(set)) {
 //			EncogUtility.trainToError(network, set, 0.00007);
 			trainMain.iteration();
-			log.info("pairing comparison: {} and error {}",pairingComparison,trainMain.getError());
+			log.info("error {}",trainMain.getError());
 		}
-		log.info("pairing comparison: {} and error {}",pairingComparison,trainMain.getError());
+		
 	}
 
 	public Letter<?> predict(Letter<?> lastLetter) {
@@ -97,6 +93,9 @@ public class ElmanWordDetector implements WordsDetector{
 	public void load(Path location) {
 		network = (BasicNetwork) EncogDirectoryPersistence.loadObject(location.toFile());
 		
+	}
+	public void clean(){
+		network = null;
 	}
 
 	@Override

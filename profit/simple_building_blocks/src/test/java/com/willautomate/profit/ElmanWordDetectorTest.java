@@ -14,6 +14,8 @@ import com.willautomate.profit.api.Letter;
 import com.willautomate.profit.api.Word;
 import com.willautomate.profit.api.WordFactory;
 import com.willautomate.profit.impl.DoubleBinarizer;
+import com.willautomate.profit.impl.DoubleLetterDistance;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -28,6 +30,7 @@ public class ElmanWordDetectorTest {
         Path csv = Paths.get("src/main/resources/fulldata.csv");
         while (!wordDone) {
             Word p = WordFactory.fromCsv(csv, 3, startSize, "M1", "M2", "M3", "M4", "M5", null, null);
+            network.clean();
             network.train(p);
             Letter<Double> toPredict = WordFactory.fromCsv(csv, 1, 1, "M1", "M2", "M3", "M4", "M5", null, null).getLetters()[0];
             Letter<Double> letterToUser = p.getLetters()[p.getLetters().length - 1];
@@ -43,7 +46,7 @@ public class ElmanWordDetectorTest {
             wordDone = Arrays.equals(ArrayUtils.toPrimitive(DoubleBinarizer.debinarize(5, toPredict.getRawData())), predictedData);
             startSize++;
             log.info("Current word size " + startSize + " \n toPredict: " + Arrays.toString(DoubleBinarizer.debinarize(5, toPredict.getRawData())) + "\n predicted: "
-                    + Arrays.toString(predictedData) + " and again ");// + Arrays.toString(predictedAgainData));
+                    + Arrays.toString(predictedData) + " and distance: " + DoubleLetterDistance.calculate(toPredict, predicted, 5));
             log.info("Letter used {}",letterToUser);
             Thread.sleep(5000L);
         }
