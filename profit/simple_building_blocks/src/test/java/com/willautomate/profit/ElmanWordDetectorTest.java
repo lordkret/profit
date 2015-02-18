@@ -6,6 +6,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileAttribute;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -29,12 +30,16 @@ public class ElmanWordDetectorTest {
 	@Test
 	public void trainingTest() throws IOException, InterruptedException {
 		ElmanWordDetector network = new ElmanWordDetector();
-		int startSize = 5;
-		boolean wordDone = false;
+        int maximumWordSize = 50;
 		Path csv = Paths.get("src/main/resources/fulldata.csv");
+		Path profitDistance = Paths.get("profitDistance") ;
+		if (! Files.exists(profitDistance))
+		    Files.createFile(profitDistance);
 		for (int samples = 0; samples < 50; samples++) {
-			StringBuilder builder = new StringBuilder();
-			int maximumWordSize = 50;
+	        int startSize = 5;
+	        boolean wordDone = false;
+		    StringBuilder builder = new StringBuilder();
+			log.warn("Starting cycle {}",samples);
 			while (!wordDone && startSize < maximumWordSize) {
 				Word p = WordFactory.fromCsv(csv, 3, startSize, "M1", "M2",
 						"M3", "M4", "M5", null, null);
@@ -56,7 +61,7 @@ public class ElmanWordDetectorTest {
 
 				builder.append(distance + ",");
 				startSize++;
-				log.info("Current word size "
+				log.warn("Current word size "
 						+ startSize
 						+ " \n toPredict: "
 						+ Arrays.toString(DoubleBinarizer.debinarize(5,
@@ -66,8 +71,9 @@ public class ElmanWordDetectorTest {
 				log.info("Letter used {}", letterToUser);
 //				Thread.sleep(5000L);
 			}
-			log.info("Writing {} to file",builder.toString());
-			Files.write(Paths.get("profitDistance"), builder.toString()
+			builder.append("\n");
+			log.warn("Writing {} to file",builder.toString());
+			Files.write(profitDistance, builder.toString()
 					.getBytes(), StandardOpenOption.APPEND);
 		}
 		Word predict = WordFactory.fromCsv(
