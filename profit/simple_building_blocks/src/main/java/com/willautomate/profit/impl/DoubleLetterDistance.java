@@ -21,9 +21,9 @@ public class DoubleLetterDistance {
 		
 		double distance = 0;
 		for (int i=0; i<comparizonSize;i++){
-			distance += bData[i] - aData[i];
+			distance += Math.abs(bData[i] - aData[i]);
 		}
-		distance = Math.abs(distance)/comparizonSize;
+		distance = distance/comparizonSize;
 		log.info("Comparing {} to {}. Distance {}",Arrays.toString(aData),Arrays.toString(bData),distance);
 		return distance;
 	}

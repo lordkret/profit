@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationLOG;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
@@ -14,7 +14,6 @@ import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.ElmanPattern;
 import org.encog.persist.EncogDirectoryPersistence;
-import org.omg.PortableServer.IdAssignmentPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +39,7 @@ public class ElmanWordDetector implements WordsDetector{
         pattern.setInputNeurons(LETTER_SIZE);
         pattern.addHiddenLayer(hiddenLayerSize);
         pattern.setOutputNeurons(LETTER_SIZE);
-        pattern.setActivationFunction(new ActivationSigmoid());
+        pattern.setActivationFunction(new ActivationLOG());
         return (BasicNetwork)pattern.generate();
     }
     private boolean doesRememberEverything(MLDataSet data){
