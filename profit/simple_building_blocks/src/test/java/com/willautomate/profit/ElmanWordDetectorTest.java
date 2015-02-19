@@ -35,7 +35,7 @@ public class ElmanWordDetectorTest {
 		Path profitDistance = Paths.get("profitDistance") ;
 		if (! Files.exists(profitDistance))
 		    Files.createFile(profitDistance);
-		for (int samples = 0; samples < 50; samples++) {
+		for (int samples = 0; samples < 500; samples++) {
 	        int startSize = 5;
 	        boolean wordDone = false;
 		    StringBuilder builder = new StringBuilder();
@@ -69,7 +69,6 @@ public class ElmanWordDetectorTest {
 						+ Arrays.toString(predictedData) + " and distance: "
 						+ distance);
 				log.info("Letter used {}", letterToUser);
-//				Thread.sleep(5000L);
 			}
 			builder.append("\n");
 			log.warn("Writing {} to file",builder.toString());

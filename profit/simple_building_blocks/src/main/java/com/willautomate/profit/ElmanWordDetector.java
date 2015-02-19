@@ -9,6 +9,7 @@ import org.encog.engine.network.activation.ActivationLOG;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.strategy.Greedy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
@@ -31,7 +32,6 @@ public class ElmanWordDetector implements WordsDetector{
 
 	private static Logger log = LoggerFactory.getLogger(ElmanWordDetector.class);
 
-    public static final Double MAX_ERROR = 0.00000008;
     public static final int LETTER_SIZE = 50;
     
     public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
@@ -54,14 +54,15 @@ public class ElmanWordDetector implements WordsDetector{
     	    Letter<Double> toCompute = new BasicLetter<Double>(ArrayUtils.toObject(pair.getInput().getData()));
     		computed =  (Letter<Double>) predict(toCompute);
     		ideal = new BasicLetter<Double>(ArrayUtils.toObject(pair.getIdeal().getData()));
-    		result = result && DoubleLetterDistance.calculate(computed, ideal, 5) == 0;
-    		log.info("effect of {}",Arrays.toString(DoubleBinarizer.debinarize(5,toCompute.getRawData())));
+    		double distance = DoubleLetterDistance.calculate(computed, ideal, 5);
+    		result = result && (distance == 0);
+    		log.info("distance {} effect of {}",distance,Arrays.toString(DoubleBinarizer.debinarize(5,toCompute.getRawData())));
     	}
     	return result;
     }
 	public void train(Word word) {
 		if (network == null){
-			network = createNetwork(word.getLetters()[0].size(),word.size()+5);
+			network = createNetwork(word.getLetters()[0].size(),word.size());
 		}
 		
 		MLDataSet set = WordFactory.toDataSet(word);
