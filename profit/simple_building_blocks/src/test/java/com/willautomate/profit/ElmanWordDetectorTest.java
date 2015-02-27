@@ -122,7 +122,7 @@ public class ElmanWordDetectorTest {
                             wordSize = startSize;
                             log.warn("Current minimal distance {} and word size {}", minimalDistance, wordSize);
                         }
-                        wordDone = distance < 5;
+                        wordDone = distance < 3;
                         Arrays.sort(predictedData);
 
                         builder.append(distance + ",");

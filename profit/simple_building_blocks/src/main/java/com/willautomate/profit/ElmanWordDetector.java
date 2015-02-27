@@ -56,7 +56,7 @@ public class ElmanWordDetector implements WordsDetector{
     		ideal = new BasicLetter<Double>(ArrayUtils.toObject(pair.getIdeal().getData()));
     		double distance = DoubleLetterDistance.calculate(computed, ideal, 5);
     		result = result && (distance == 0);
-    		log.info("distance {} effect of {}",distance,Arrays.toString(DoubleBinarizer.debinarize(5,toCompute.getRawData())));
+    		log.debug("distance {} effect of {}",distance,Arrays.toString(DoubleBinarizer.debinarize(5,toCompute.getRawData())));
     	}
     	return result;
     }
@@ -75,7 +75,7 @@ public class ElmanWordDetector implements WordsDetector{
 		while (!doesRememberEverything(set)) {
 //			EncogUtility.trainToError(network, set, 0.00007);
 			trainMain.iteration();
-			log.info("error {}",trainMain.getError());
+			log.debug("error {}",trainMain.getError());
 		}
 		
 	}
