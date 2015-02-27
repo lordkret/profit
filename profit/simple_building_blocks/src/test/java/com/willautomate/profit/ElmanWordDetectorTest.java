@@ -29,8 +29,8 @@ public class ElmanWordDetectorTest {
 
     @Test
     public void trainingTest() throws IOException, InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(8);
-        for (int i = 0; i < 10; i++) {
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        for (int i = 0; i < 4; i++) {
             Runnable worker = new WordWalker();
             executor.execute(worker);
         }
@@ -99,7 +99,8 @@ public class ElmanWordDetectorTest {
                     Files.createFile(minimalDistanceF);
                 
                 for (int samples = 0; samples < 1; samples++) {
-                    int startSize = 5;
+                    int startSize = 21;
+                    int maxSize = 35;
                     boolean wordDone = false;
                     StringBuilder builder = new StringBuilder();
                     log.warn("Starting cycle {}", samples);
@@ -121,11 +122,15 @@ public class ElmanWordDetectorTest {
                             wordSize = startSize;
                             log.warn("Current minimal distance {} and word size {}", minimalDistance, wordSize);
                         }
-                        wordDone = distance == 0;
+                        wordDone = distance < 5;
                         Arrays.sort(predictedData);
 
                         builder.append(distance + ",");
-                        startSize++;
+                        if (startSize < maxSize){
+                        	startSize++;
+                        } else {
+                        	startSize = 21;
+                        }
                         log.warn("Current word size " + startSize + " \n toPredict: " + Arrays.toString(DoubleBinarizer.debinarize(5, toPredict.getRawData())) + "\n predicted: "
                                 + Arrays.toString(predictedData) + " and distance: " + distance);
                         log.info("Letter used {}", letterToUser);

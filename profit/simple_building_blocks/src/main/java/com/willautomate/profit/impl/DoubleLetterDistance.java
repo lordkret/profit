@@ -21,10 +21,11 @@ public class DoubleLetterDistance {
 		
 		double distance = 0;
 		for (int i=0; i<comparizonSize;i++){
-			distance += Math.abs(bData[i] - aData[i]);
+			if (bData[i] - aData[i] != 0)
+				distance ++;
 		}
-		distance = distance/comparizonSize;
-		log.info("Comparing {} to {}. Distance {}",Arrays.toString(aData),Arrays.toString(bData),distance);
+		
+		log.debug("Comparing {} to {}. Distance {}",Arrays.toString(aData),Arrays.toString(bData),distance);
 		return distance;
 	}
 }
