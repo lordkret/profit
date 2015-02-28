@@ -28,13 +28,13 @@ public class ElmanWordDetectorTest {
 
     private static final Logger log = LoggerFactory.getLogger(ElmanWordDetectorTest.class);
 
-    private static final String[] MAIN_WORD = {"M1", "M2", "M3", "M4", "M5", null, null};
-    private static final String[] LUCKY_WORD = {null,null,null,null,null,"L1","L2"};
+    public static final String[] MAIN_WORD = {"M1", "M2", "M3", "M4", "M5", null, null};
+    public static final String[] LUCKY_WORD = {null,null,null,null,null,"L1","L2"};
     @Test
     public void trainingTest() throws IOException, InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(7);
 //        for (int i = 0; i < 4; i++) {
-//            Runnable worker = new WordWalker(50,5,MAIN_WORD).withStartSize(29).withMaximumError(3).withMaxSize(36);
+//            Runnable worker = new WordWalker(50,5,MAIN_WORD).withStartSize(29).withMaximumError(2).withMaxSize(36);
 //            executor.execute(worker);
 //        }
 //        for (int i = 0; i < 2; i++) {
@@ -42,7 +42,7 @@ public class ElmanWordDetectorTest {
 //            executor.execute(worker);
 //        }
         for (int i = 0; i<3;i++){
-        executor.execute(new WordWalker(11, 2, LUCKY_WORD).withStartSize(1).withMaxSize(100).withMaximumError(1).withDistancePattern("lucky"));
+        executor.execute(new WordWalker(11, 2, LUCKY_WORD).withStartSize(1).withMaxSize(100).withMaximumError(0).withDistancePattern("lucky"));
         }
         executor.shutdown();
         executor.awaitTermination(2, TimeUnit.DAYS);

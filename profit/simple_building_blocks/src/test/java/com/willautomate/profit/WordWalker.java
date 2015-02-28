@@ -117,7 +117,7 @@ public class WordWalker implements Runnable {
             Files.write(profitDistance, builder.toString().getBytes(), StandardOpenOption.APPEND);
             Files.write(minimumDistanceF, String.format("%s,%s", minimalDistance, wordSize).getBytes(), StandardOpenOption.APPEND);
 
-            network.save(Paths.get(String.format("net-final-%s-ws-%s", distancePattern,wordSize,distancePostfix)));
+            network.save(Paths.get(String.format("net-final-%s-ws-%s-%s", distancePattern,wordSize,distancePostfix)));
         } catch (Exception e) {
             log.error("Issue occured", e);
         }
