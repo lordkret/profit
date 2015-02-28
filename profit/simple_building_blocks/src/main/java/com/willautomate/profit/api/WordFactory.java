@@ -50,7 +50,7 @@ public class WordFactory {
 		return new BasicLetter<Double>(ArrayUtils.toObject(compute.getData()));
 	}
 
-	public static Word fromCsv(Path csvFile, int startRow, int rowsToRead, String...columnsToRead) throws IOException{
+	public static Word fromCsv(int binarizedWordSize, Path csvFile, int startRow, int rowsToRead, String...columnsToRead) throws IOException{
 		List<Letter> letters = Lists.newArrayList();
 		BufferedReader file = Files.newBufferedReader(csvFile,Charset.defaultCharset());
 		CsvMapReader csvReader = new CsvMapReader(file, CsvPreference.EXCEL_PREFERENCE);
@@ -61,7 +61,7 @@ public class WordFactory {
 		int readRows = 0;
 		while ((readRows < rowsToRead)&&(oneRow = csvReader.read(columnsToRead))!= null){
 			if (csvReader.getRowNumber() >= startRow){
-			letters.add(new BasicLetter(DoubleBinarizer.binarize(50, oneRow.values())));
+			letters.add(new BasicLetter(DoubleBinarizer.binarize(binarizedWordSize, oneRow.values())));
 			readRows++;
 			}
 		}

@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import javax.swing.DebugGraphics;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.encog.engine.network.activation.ActivationLOG;
 import org.encog.ml.data.MLDataPair;
@@ -31,14 +33,15 @@ public class ElmanWordDetector implements WordsDetector{
 	private BasicNetwork network;
 
 	private static Logger log = LoggerFactory.getLogger(ElmanWordDetector.class);
-
-    public static final int LETTER_SIZE = 50;
-    
+	public ElmanWordDetector(final int debinarizedLetterSize){
+	    this.debinarizedLetterSize = debinarizedLetterSize;
+	}
+	private final int debinarizedLetterSize;
     public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
     	ElmanPattern pattern = new ElmanPattern();
-        pattern.setInputNeurons(LETTER_SIZE);
+        pattern.setInputNeurons(letterSize);
         pattern.addHiddenLayer(hiddenLayerSize);
-        pattern.setOutputNeurons(LETTER_SIZE);
+        pattern.setOutputNeurons(letterSize);
         pattern.setActivationFunction(new ActivationLOG());
         return (BasicNetwork)pattern.generate();
     }
@@ -54,9 +57,9 @@ public class ElmanWordDetector implements WordsDetector{
     	    Letter<Double> toCompute = new BasicLetter<Double>(ArrayUtils.toObject(pair.getInput().getData()));
     		computed =  (Letter<Double>) predict(toCompute);
     		ideal = new BasicLetter<Double>(ArrayUtils.toObject(pair.getIdeal().getData()));
-    		double distance = DoubleLetterDistance.calculate(computed, ideal, 5);
+    		double distance = DoubleLetterDistance.calculate(computed, ideal, debinarizedLetterSize);
     		result = result && (distance == 0);
-    		log.debug("distance {} effect of {}",distance,Arrays.toString(DoubleBinarizer.debinarize(5,toCompute.getRawData())));
+    		log.debug("distance {} effect of {}",distance,Arrays.toString(DoubleBinarizer.debinarize(debinarizedLetterSize,toCompute.getRawData())));
     	}
     	return result;
     }
@@ -68,7 +71,6 @@ public class ElmanWordDetector implements WordsDetector{
 		MLDataSet set = WordFactory.toDataSet(word);
 
 		final MLTrain trainMain = new ResilientPropagation((ContainsFlat)network, set); 
-//				new Backpropagation(network, WordFactory.toDataSet(word),0.000001, 0.0);
 
 //		trainMain.addStrategy(new Greedy());
 		
@@ -77,11 +79,10 @@ public class ElmanWordDetector implements WordsDetector{
 			trainMain.iteration();
 			log.debug("error {}",trainMain.getError());
 		}
-		
+		trainMain.finishTraining();
 	}
 
 	public Letter<?> predict(Letter<?> lastLetter) {
-//	    network.getStructure().getFlat().compute(input, output);
 		return WordFactory.toLetter(network.compute(WordFactory.toData(lastLetter)));
 	}
 
