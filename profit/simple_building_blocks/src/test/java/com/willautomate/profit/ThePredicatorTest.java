@@ -51,7 +51,7 @@ public class ThePredicatorTest {
 	public void upTrainLuckyAndPredict() throws IOException{
 	    Path csv = Paths.get("src/main/resources/fulldata.csv");
 	    ElmanWordDetector detector = new ElmanWordDetector(11);
-        detector.load(Paths.get("net-final-lucky-ws-3"));
+        detector.load(Paths.get("net-final-lucky-ws-5"));
         Word p = WordFactory.fromCsv(11,csv, 1, 5, ElmanWordDetectorTest.LUCKY_WORD);
         detector.train(p);
         Letter<Double> lastLetter = new BasicLetter<Double>(DoubleBinarizer.binarize(11, 1,11));

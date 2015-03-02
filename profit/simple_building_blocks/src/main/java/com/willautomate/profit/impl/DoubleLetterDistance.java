@@ -12,20 +12,22 @@ public class DoubleLetterDistance {
 	private static Logger log = LoggerFactory.getLogger(DoubleLetterDistance.class);
 
 	public static double calculate(Letter a, Letter b, int comparizonSize){
-		
-		
 		Double[] aData = DoubleBinarizer.debinarize(comparizonSize,((Letter<Double>) a).getRawData());
 		Arrays.sort(aData);
 		Double[] bData = DoubleBinarizer.debinarize(comparizonSize,((Letter<Double>) b).getRawData());
 		Arrays.sort(bData);
-		
 		double distance = 0;
+		boolean doIncrease = true;
 		for (int i=0; i<comparizonSize;i++){
-			if (bData[i] - aData[i] != 0)
-				distance ++;
+			doIncrease = true;
+			for (int j =0 ; j< comparizonSize; j++){
+				if (bData[i] - aData[j] == 0){
+					doIncrease = false;
+				}
+			}
+			if (doIncrease) distance++;		
 		}
-		
-		log.debug("Comparing {} to {}. Distance {}",Arrays.toString(aData),Arrays.toString(bData),distance);
+		log.trace("Comparing {} to {}. Distance {}",Arrays.toString(aData),Arrays.toString(bData),distance);
 		return distance;
 	}
 }

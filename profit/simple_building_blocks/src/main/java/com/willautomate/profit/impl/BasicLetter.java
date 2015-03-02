@@ -9,7 +9,7 @@ import javax.print.attribute.standard.MediaSize.Other;
 public class BasicLetter<T> implements Letter<T>{
 
 	private final T[] rawData;
-	public BasicLetter(T[] data){
+	public BasicLetter(T... data){
 		rawData = data;
 	}
 	
