@@ -32,17 +32,16 @@ public class ElmanWordDetectorTest {
     public static final String[] LUCKY_WORD = {null,null,null,null,null,"L1","L2"};
     @Test
     public void trainingTest() throws IOException, InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(7);
-//        for (int i = 0; i < 4; i++) {
-//            Runnable worker = new WordWalker(50,5,MAIN_WORD).withStartSize(29).withMaximumError(2).withMaxSize(36);
-//            executor.execute(worker);
-//        }
-//        for (int i = 0; i < 2; i++) {
-//            Runnable worker = new WordWalker(50,5,MAIN_WORD).withMaximumError(3).withStartSize(1).withMaxSize(120);
-//            executor.execute(worker);
-//        }
-        for (int i = 0; i<3;i++){
-        executor.execute(new WordWalker(11, 2, LUCKY_WORD).withStartSize(1).withMaxSize(100).withMaximumError(0).withDistancePattern("lucky"));
+        ExecutorService executor = Executors.newFixedThreadPool(24);
+        for (int i = 0; i < 40; i++) {
+            Runnable worker = new WordWalker(50,5,MAIN_WORD).withStartSize(29).withMaximumError(2).withMaxSize(36).withDistancePattern("main-"+i);
+            executor.execute(worker);
+            executor.execute(new WordWalker(11, 2, LUCKY_WORD).withStartSize(1).withMaxSize(50).withMaximumError(0).withDistancePattern("lucky-"+i));
+            if (i==10 || i == 30){
+                executor.execute(new WordWalker(50,5,MAIN_WORD).withMaximumError(2).withStartSize(1).withMaxSize(120).withDistancePattern("mainlong"+i));
+                executor.execute(new WordWalker(50,5,MAIN_WORD).withStartSize(29).withMaximumError(0).withMaxSize(36).withDistancePattern("main0-"+i));
+                
+            }
         }
         executor.shutdown();
         executor.awaitTermination(2, TimeUnit.DAYS);
