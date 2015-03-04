@@ -70,7 +70,9 @@ public class WordWalker implements Runnable {
     }
     @Override
     public void run() {
+        
         String distancePostfix = Thread.currentThread().getName();
+        Thread.currentThread().setName(distancePattern);
         try {
             ElmanWordDetector network = new ElmanWordDetector(debinarizedLetterSize);
             

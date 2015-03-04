@@ -34,14 +34,12 @@ public class ElmanWordDetectorTest {
     public void trainingTest() throws IOException, InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(24);
         for (int i = 0; i < 40; i++) {
-            Runnable worker = new WordWalker(50,5,MAIN_WORD).withStartSize(29).withMaximumError(2).withMaxSize(36).withDistancePattern("main-"+i);
+            Runnable worker = new WordWalker(50,5,MAIN_WORD).withStartSize(15).withMaximumError(1).withMaxSize(60).withDistancePattern("main-"+i);
             executor.execute(worker);
-            executor.execute(new WordWalker(11, 2, LUCKY_WORD).withStartSize(1).withMaxSize(50).withMaximumError(0).withDistancePattern("lucky-"+i));
-            if (i==10 || i == 30){
-                executor.execute(new WordWalker(50,5,MAIN_WORD).withMaximumError(2).withStartSize(1).withMaxSize(120).withDistancePattern("mainlong"+i));
+            executor.execute(new WordWalker(11, 2, LUCKY_WORD).withStartSize(1).withMaxSize(30).withMaximumError(0).withDistancePattern("lucky-"+i));
+                executor.execute(new WordWalker(50,5,MAIN_WORD).withMaximumError(1).withStartSize(1).withMaxSize(120).withDistancePattern("mainlong"+i));
                 executor.execute(new WordWalker(50,5,MAIN_WORD).withStartSize(29).withMaximumError(0).withMaxSize(36).withDistancePattern("main0-"+i));
                 
-            }
         }
         executor.shutdown();
         executor.awaitTermination(2, TimeUnit.DAYS);

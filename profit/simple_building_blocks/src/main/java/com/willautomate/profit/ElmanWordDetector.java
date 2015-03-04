@@ -3,19 +3,19 @@ package com.willautomate.profit;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Iterator;
-
-import javax.swing.DebugGraphics;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.encog.engine.network.activation.ActivationLOG;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
-import org.encog.ml.train.strategy.Greedy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.ElmanPattern;
+import org.encog.neural.pattern.JordanPattern;
+import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +37,14 @@ public class ElmanWordDetector implements WordsDetector{
 	    this.debinarizedLetterSize = debinarizedLetterSize;
 	}
 	private final int debinarizedLetterSize;
-    public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
-    	ElmanPattern pattern = new ElmanPattern();
+	private static AtomicBoolean flag = new AtomicBoolean(false);
+    
+	public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
+	    NeuralNetworkPattern pattern;
+	    
+	        pattern = new ElmanPattern();
+	    
+	    
         pattern.setInputNeurons(letterSize);
         pattern.addHiddenLayer(hiddenLayerSize);
         pattern.setOutputNeurons(letterSize);
