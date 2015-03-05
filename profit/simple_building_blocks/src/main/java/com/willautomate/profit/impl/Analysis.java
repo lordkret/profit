@@ -1,20 +1,24 @@
 package com.willautomate.profit.impl;
 
-import com.google.common.collect.Maps;
-import com.willautomate.profit.api.Letter;
-
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- * Created by Hannah on 05/03/2015.
- */
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
+import com.willautomate.profit.api.Letter;
+
 public class Analysis {
 
+    private static Logger log = LoggerFactory.getLogger(Analysis.class);
     private  ConcurrentMap<String,Integer> letterFrequency = Maps.newConcurrentMap();
     private ConcurrentMap<Double,Integer> characterFrequency = Maps.newConcurrentMap();
 
@@ -32,9 +36,17 @@ public class Analysis {
         return instance;
     }
 
-    private Analysis(String name){
+    private Analysis(String name) {
         characterPath = Paths.get(name+"CharacterAna");
         letterPath = Paths.get(name+"LetterAna");
+        try {
+        if (! Files.exists(characterPath))
+            Files.createFile(characterPath);
+        if (! Files.exists(letterPath))
+        Files.createFile(letterPath);
+        } catch (IOException e){
+            log.error("Can't create files", e);
+        }
     }
 
     public synchronized void analysis(Letter<Double> letter){
@@ -43,9 +55,19 @@ public class Analysis {
         for(Double character: letter.getRawData()){
             characterFrequency.put(character,(characterFrequency.get(character)==null)? 1: characterFrequency.get(character).intValue()+1);
         }
+        try {
+        serialize();
+        } catch (IOException e){
+            log.error("Can't serialize",e);
+        }
     }
 
-    private void serialize(){
-        Files.write(characterPath,characterFrequency.entrySet(), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+    private void serialize() throws IOException{
+        Files.write(characterPath,serialize(characterFrequency).getBytes(), StandardOpenOption.WRITE);
+        Files.write(letterPath,serialize(letterFrequency).getBytes(), StandardOpenOption.WRITE);
+        
+    }
+    private String serialize(Map map){
+        return Joiner.on("\n").withKeyValueSeparator(",").join(map.entrySet());
     }
 }

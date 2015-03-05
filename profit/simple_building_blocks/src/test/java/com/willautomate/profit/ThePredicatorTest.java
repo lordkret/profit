@@ -89,7 +89,7 @@ public class ThePredicatorTest {
 		}
 	}
 	
-	
+	@Test
 	public void findMeOutlierDistances() throws IOException{
 		Path csv = Paths.get("src/main/resources/fulldata.csv");
 		CsvMapReader csvReader = new CsvMapReader(Files.newBufferedReader(csv, Charset.defaultCharset()), CsvPreference.EXCEL_PREFERENCE);
