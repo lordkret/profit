@@ -33,6 +33,10 @@ public class WordWalker implements Runnable {
         this.binarizedLetterSize = binarizedWordSize;
         this.debinarizedLetterSize = debinarizedWordSize;
      }
+    public WordWalker withFile(Path csv){
+    	this.csv = csv;
+    	return this;
+    }
     public WordWalker withStartSize(final int wordStartSize){
         this.startSize = wordStartSize;
         return this;
