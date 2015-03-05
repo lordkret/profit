@@ -108,13 +108,13 @@ public class ThePredicatorTest {
 				outliers.add(i);
 		}
 		
-		CsvMapWriter csvWriter = new CsvMapWriter(Files.newBufferedWriter(Paths.get("src/main/resources/firstLetters.csv"), Charset.defaultCharset(), StandardOpenOption.WRITE,StandardOpenOption.CREATE_NEW), CsvPreference.EXCEL_PREFERENCE);
+		CsvMapWriter csvWriter = new CsvMapWriter(Files.newBufferedWriter(Paths.get("src/main/resources/outliers.csv"), Charset.defaultCharset(), StandardOpenOption.WRITE,StandardOpenOption.CREATE_NEW), CsvPreference.EXCEL_PREFERENCE);
 		csvReader = new CsvMapReader(Files.newBufferedReader(csv, Charset.defaultCharset()), CsvPreference.EXCEL_PREFERENCE);
 		allHeaders = csvReader.getHeader(true);
 		int currentRow;
 		while ((oneRow = csvReader.read(allHeaders))!= null){
 			currentRow = csvReader.getRowNumber()-1;
-			if ( outliers.contains(currentRow)){
+			if ( outliers.contains(currentRow)|| outliers.contains(currentRow-1)){
 				csvWriter.write(oneRow, allHeaders);
 			}
 		}

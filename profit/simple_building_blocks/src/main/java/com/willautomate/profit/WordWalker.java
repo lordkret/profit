@@ -28,31 +28,38 @@ public class WordWalker implements Runnable {
 
     private boolean writeToFileOnMinimal = false;
     private Path csv =  Paths.get("src/main/resources/fulldata.csv");
+    private boolean save = true;
     public WordWalker(int binarizedWordSize, int debinarizedWordSize, String[] wordDataPattern) {
         this.wordDataPattern = wordDataPattern;
         this.binarizedLetterSize = binarizedWordSize;
         this.debinarizedLetterSize = debinarizedWordSize;
-     }
+    }
+    private int finalWordSize = startSize;
+    public WordWalker saveNetwork(boolean save){
+        this.save = save;
+        return this;
+    }
+
     public WordWalker withFile(Path csv){
-    	this.csv = csv;
-    	return this;
+        this.csv = csv;
+        return this;
     }
     public WordWalker withStartSize(final int wordStartSize){
         this.startSize = wordStartSize;
         return this;
     }
-    
+
     public WordWalker withMaxSize(final int wordMaxSize){
         this.maxSize = wordMaxSize;
         return this;
     }
-    
+
     public WordWalker withDataFile(Path csv){
         this.csv = csv;
         return this;
     }
     String distancePattern = "profitDistance";
-    
+
     public WordWalker withDistancePattern(final String distancePattern){
         this.distancePattern = distancePattern;
         return this;
@@ -72,24 +79,27 @@ public class WordWalker implements Runnable {
             Files.createFile(minimalDistanceF);
         return minimalDistanceF;
     }
+    private ElmanWordDetector network;
     @Override
     public void run() {
-        
+
         String distancePostfix = Thread.currentThread().getName();
         Thread.currentThread().setName(distancePattern);
         try {
-            ElmanWordDetector network = new ElmanWordDetector(debinarizedLetterSize);
-            
+            network = new ElmanWordDetector(debinarizedLetterSize);
+
             Path profitDistance = Paths.get(String.format("%s-%s", distancePattern,distancePostfix));
-            if (!Files.exists(profitDistance))
+            if (save && !Files.exists(profitDistance))
                 Files.createFile(profitDistance);
-            Path minimumDistanceF = createMinimalDistanceFile(distancePattern);
+            Path minimumDistanceF = null;
+            if (save)
+                minimumDistanceF = createMinimalDistanceFile(distancePattern);
             boolean wordDone = false;
             StringBuilder builder = new StringBuilder();
             double minimalDistance = 10;
             int wordSize = startSize;
             Letter<Double> toPredict = WordFactory.fromCsv(binarizedLetterSize,csv, 1, 1, wordDataPattern).getLetters()[0];
-            
+
             while (!wordDone) {
                 Word p = WordFactory.fromCsv(binarizedLetterSize,csv, 3, wordSize, wordDataPattern);
                 network.clean();
@@ -102,7 +112,7 @@ public class WordWalker implements Runnable {
                 if (distance < minimalDistance) {
                     minimalDistance = distance;
                     log.warn("Current minimal distance {} and word size {}", minimalDistance, wordSize);
-                    if (writeToFileOnMinimal){
+                    if (save && writeToFileOnMinimal){
                         network.save(Paths.get(String.format("net-%s-ws-%s-%s-%s",distance,wordSize, distancePattern,distancePostfix)));    
                     }
                 }
@@ -119,13 +129,22 @@ public class WordWalker implements Runnable {
                 log.debug("Letter used {}", letterToUser);
             }
             builder.append("\n");
-            log.warn("Writing {} to file", builder.toString());
-            Files.write(profitDistance, builder.toString().getBytes(), StandardOpenOption.APPEND);
-            Files.write(minimumDistanceF, String.format("%s,%s", minimalDistance, wordSize).getBytes(), StandardOpenOption.APPEND);
-
-            network.save(Paths.get(String.format("net-final-%s-ws-%s-%s", distancePattern,wordSize,distancePostfix)));
+            finalWordSize = wordSize;
+            if (save){
+                log.warn("Writing {} to file", builder.toString());
+                Files.write(profitDistance, builder.toString().getBytes(), StandardOpenOption.APPEND);
+                Files.write(minimumDistanceF, String.format("%s,%s", minimalDistance, wordSize).getBytes(), StandardOpenOption.APPEND);
+                network.save(Paths.get(String.format("net-final-%s-ws-%s-%s", distancePattern,wordSize,distancePostfix)));
+            }
         } catch (Exception e) {
             log.error("Issue occured", e);
         }
+    }
+    public Letter uptrainAndPredict() throws IOException{
+        Letter<Double> toUse = WordFactory.fromCsv(binarizedLetterSize,csv, 1, 1, wordDataPattern).getLetters()[0];
+        Word p = WordFactory.fromCsv(binarizedLetterSize,csv, 1, finalWordSize-1, wordDataPattern);
+        network.train(p);
+        return network.predict(toUse);
+        
     }
 }
