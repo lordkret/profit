@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.willautomate.profit.impl.Analysis;
+import com.willautomate.profit.impl.DoubleBinarizer;
 
 public class FullDataWordWalker implements Runnable{
     private static final String name = "FullData";
@@ -15,10 +16,10 @@ public class FullDataWordWalker implements Runnable{
          csv = Paths.get("src/main/resources/fulldata.csv");
          walker = new WordWalker(50, 5, ElmanWordDetectorTest.MAIN_WORD)
                  .withDataFile(csv)
-                 .withMaximumError(0)
+                 .withMaximumError(5)
                  .withStartSize(121)
                  .withMaxSize(121)
-                 .saveNetwork(false)
+                 .saveNetwork(true)
                  .withDistancePattern(name+i);
     }
 
@@ -26,7 +27,7 @@ public class FullDataWordWalker implements Runnable{
     public void run() {
         walker.run();
         try {
-            Analysis.getInstance(name).analysis(walker.uptrainAndPredict());
+            Analysis.getInstance(name).analysis(DoubleBinarizer.debinarize(5, walker.uptrainAndPredict()));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

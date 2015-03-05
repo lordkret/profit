@@ -54,11 +54,10 @@ public class ElmanWordDetectorTest {
         executor.execute(new FirstLetterWalker(i));
         executor.execute(new OutliersAndFirstLetterWalker(i));
         executor.execute(new FullDataWordWalker(i));
-        executor.execute(new WordWalker(11, 2, LUCKY_WORD).withStartSize(10).withMaxSize(20).withMaximumError(0).withDistancePattern("lucky-"+i));
-        
+        executor.execute(new LuckyWalker(i));
         }
         executor.shutdown();
-        executor.awaitTermination(1, TimeUnit.HOURS);
+        executor.awaitTermination(9, TimeUnit.HOURS);
     }
     
     @Test

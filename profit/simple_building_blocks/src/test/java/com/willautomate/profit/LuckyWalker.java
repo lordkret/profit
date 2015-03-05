@@ -7,18 +7,18 @@ import java.nio.file.Paths;
 import com.willautomate.profit.impl.Analysis;
 import com.willautomate.profit.impl.DoubleBinarizer;
 
-public class OutliersAndFirstLetterWalker implements Runnable{
-    private static final String name = "Outliers";
+public class LuckyWalker implements Runnable{
+    private static final String name = "Lucky";
     private Path csv;
     WordWalker walker;
     
-    public OutliersAndFirstLetterWalker(int i) {
-         csv = Paths.get("src/main/resources/outliers.csv");
-         walker = new WordWalker(50, 5, ElmanWordDetectorTest.MAIN_WORD)
+    public LuckyWalker(int i) {
+         csv = Paths.get("src/main/resources/fulldata.csv");
+         walker = new WordWalker(50, 5, ElmanWordDetectorTest.LUCKY_WORD)
                  .withDataFile(csv)
-                 .withMaximumError(3)
-                 .withStartSize(33)
-                 .withMaxSize(33)
+                 .withMaximumError(0)
+                 .withStartSize(10)
+                 .withMaxSize(20)
                  .saveNetwork(false)
                  .withDistancePattern(name+i);
     }
@@ -27,7 +27,7 @@ public class OutliersAndFirstLetterWalker implements Runnable{
     public void run() {
         walker.run();
         try {
-            Analysis.getInstance(name).analysis(DoubleBinarizer.debinarize(5,walker.uptrainAndPredict()));
+            Analysis.getInstance(name).analysis(DoubleBinarizer.debinarize(2,walker.uptrainAndPredict()));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

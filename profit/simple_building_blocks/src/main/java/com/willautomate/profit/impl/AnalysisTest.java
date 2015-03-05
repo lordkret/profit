@@ -8,9 +8,9 @@ public class AnalysisTest {
 
     @Test
     public void test() {
-        Analysis.getInstance("lame").analysis(new BasicLetter<Double>(1D,2D,4D));
-        Analysis.getInstance("lame").analysis(new BasicLetter<Double>(1D,3D,2D));
-        Analysis.getInstance("lame").analysis(new BasicLetter<Double>(1D,3D,2D));
+        Analysis.getInstance("lame").analysis(new BasicLetter<Double>(1D,2D,4D).getRawData());
+        Analysis.getInstance("lame").analysis(new BasicLetter<Double>(1D,3D,2D).getRawData());
+        Analysis.getInstance("lame").analysis(new BasicLetter<Double>(1D,3D,2D).getRawData());
     }
 
 }
