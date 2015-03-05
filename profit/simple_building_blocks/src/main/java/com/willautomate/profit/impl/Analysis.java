@@ -49,7 +49,10 @@ public class Analysis {
         }
     }
 
-    public synchronized void analysis(Double[] letter){
+    public synchronized void analysis(final Double[] letter){
+        
+        Double[] letterValue = letter;
+        Arrays.sort(letterValue);
         String key = Arrays.toString(letter);
         letterFrequency.put(key,(letterFrequency.get(key)==null)? 1 : letterFrequency.get(key).intValue()+1);
         for(Double character: letter){

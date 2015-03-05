@@ -37,7 +37,7 @@ public class ElmanWordDetectorTest {
             Runnable worker = new WordWalker(50,5,MAIN_WORD).withStartSize(15).withMaximumError(1).withMaxSize(60).withDistancePattern("main-"+i);
             executor.execute(worker);
             executor.execute(new WordWalker(11, 2, LUCKY_WORD).withStartSize(1).withMaxSize(30).withMaximumError(0).withDistancePattern("lucky-"+i));
-            
+
             if (i%3 == 0){
                 executor.execute(new WordWalker(50,5,MAIN_WORD).withMaximumError(1).withStartSize(1).withMaxSize(120).withDistancePattern("mainlong"+i));
                 executor.execute(new WordWalker(50,5,MAIN_WORD).withStartSize(29).withMaximumError(0).withMaxSize(36).withDistancePattern("main0-"+i));
@@ -51,15 +51,16 @@ public class ElmanWordDetectorTest {
     public void threeStream() throws InterruptedException{
         ExecutorService executor = Executors.newFixedThreadPool(48);
         for (int i = 0; i < 100; i++) {
-        executor.execute(new FirstLetterWalker(i));
-        executor.execute(new OutliersAndFirstLetterWalker(i));
-        executor.execute(new FullDataWordWalker(i));
-        executor.execute(new LuckyWalker(i));
+            executor.execute(new LuckyWalker(i));
+            executor.execute(new FirstLetterWalker(i));
+            executor.execute(new OutliersAndFirstLetterWalker(i));
+            executor.execute(new FullDataWordWalker(i));
+
         }
         executor.shutdown();
         executor.awaitTermination(9, TimeUnit.HOURS);
     }
-    
+
     @Test
     public void wordTrainingTest() throws Exception {
         ElmanWordDetector network = new ElmanWordDetector(50);
@@ -83,7 +84,7 @@ public class ElmanWordDetectorTest {
         }
 
     }
-    
 
-   
+
+
 }

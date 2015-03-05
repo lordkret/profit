@@ -14,7 +14,7 @@ public class LuckyWalker implements Runnable{
     
     public LuckyWalker(int i) {
          csv = Paths.get("src/main/resources/fulldata.csv");
-         walker = new WordWalker(50, 5, ElmanWordDetectorTest.LUCKY_WORD)
+         walker = new WordWalker(11, 2, ElmanWordDetectorTest.LUCKY_WORD)
                  .withDataFile(csv)
                  .withMaximumError(0)
                  .withStartSize(10)
