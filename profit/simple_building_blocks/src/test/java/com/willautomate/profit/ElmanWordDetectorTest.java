@@ -49,9 +49,13 @@ public class ElmanWordDetectorTest {
 
     @Test
     public void threeStream() throws InterruptedException{
-        ExecutorService executor = Executors.newFixedThreadPool(36);
-        for (int i = 0; i < 40; i++) {
+        ExecutorService executor = Executors.newFixedThreadPool(48);
+        for (int i = 0; i < 100; i++) {
         executor.execute(new FirstLetterWalker(i));
+        executor.execute(new OutliersAndFirstLetterWalker(i));
+        executor.execute(new FullDataWordWalker(i));
+        executor.execute(new WordWalker(11, 2, LUCKY_WORD).withStartSize(10).withMaxSize(20).withMaximumError(0).withDistancePattern("lucky-"+i));
+        
         }
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.HOURS);

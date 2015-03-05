@@ -12,12 +12,12 @@ public class OutliersAndFirstLetterWalker implements Runnable{
     WordWalker walker;
     
     public OutliersAndFirstLetterWalker(int i) {
-         csv = Paths.get("src/main/resources/outlier.csv");
+         csv = Paths.get("src/main/resources/outliers.csv");
          walker = new WordWalker(50, 5, ElmanWordDetectorTest.MAIN_WORD)
                  .withDataFile(csv)
                  .withMaximumError(0)
-                 .withStartSize(16)
-                 .withMaxSize(16)
+                 .withStartSize(33)
+                 .withMaxSize(33)
                  .saveNetwork(false)
                  .withDistancePattern(name+i);
     }
