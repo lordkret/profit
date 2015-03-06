@@ -50,11 +50,11 @@ public class ElmanWordDetectorTest {
     @Test
     public void threeStream() throws InterruptedException{
         ExecutorService executor = Executors.newFixedThreadPool(48);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             executor.execute(new LuckyWalker(i));
             executor.execute(new FirstLetterWalker(i));
             executor.execute(new OutliersAndFirstLetterWalker(i));
-            executor.execute(new FullDataWordWalker(i));
+            if (i % 5 == 0 )executor.execute(new FullDataWordWalker(i));
 
         }
         executor.shutdown();
