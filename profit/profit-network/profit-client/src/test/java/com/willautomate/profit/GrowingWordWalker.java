@@ -17,7 +17,7 @@ public class GrowingWordWalker implements Runnable{
 	}
 	public GrowingWordWalker(int i, int error) {
 		 csv = Paths.get("src/main/resources/fulldata.csv");
-		 walker = new WordWalker(50, 5, ElmanWordDetectorTest.MAIN_WORD)
+		 walker = new WordWalker(50, 5, ElmanWordDetectorRunner.MAIN_WORD)
 				 .withDataFile(csv)
 				 .withMaximumError(error)
 				 .withStartSize(20)

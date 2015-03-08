@@ -14,7 +14,7 @@ public class FirstLetterWalker  implements Runnable {
 	
 	public FirstLetterWalker(int i) {
 		 csv = Paths.get("src/main/resources/firstLetters.csv");
-		 walker = new WordWalker(50, 5, ElmanWordDetectorTest.MAIN_WORD)
+		 walker = new WordWalker(50, 5, ElmanWordDetectorRunner.MAIN_WORD)
 				 .withDataFile(csv)
 				 .withMaximumError(3)
 				 .withStartSize(16)

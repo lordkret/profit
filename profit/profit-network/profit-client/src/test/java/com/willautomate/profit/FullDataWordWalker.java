@@ -14,7 +14,7 @@ public class FullDataWordWalker implements Runnable{
     
     public FullDataWordWalker(int i) {
          csv = Paths.get("src/main/resources/fulldata.csv");
-         walker = new WordWalker(50, 5, ElmanWordDetectorTest.MAIN_WORD)
+         walker = new WordWalker(50, 5, ElmanWordDetectorRunner.MAIN_WORD)
                  .withDataFile(csv)
                  .withMaximumError(5)
                  .withStartSize(121)

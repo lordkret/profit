@@ -14,7 +14,7 @@ public class OutliersAndFirstLetterWalker implements Runnable{
     
     public OutliersAndFirstLetterWalker(int i) {
          csv = Paths.get("src/main/resources/outliers.csv");
-         walker = new WordWalker(50, 5, ElmanWordDetectorTest.MAIN_WORD)
+         walker = new WordWalker(50, 5, ElmanWordDetectorRunner.MAIN_WORD)
                  .withDataFile(csv)
                  .withMaximumError(3)
                  .withStartSize(33)

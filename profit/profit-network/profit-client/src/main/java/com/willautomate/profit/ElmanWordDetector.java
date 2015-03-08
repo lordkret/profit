@@ -32,7 +32,7 @@ public class ElmanWordDetector implements WordsDetector{
 
 	private BasicNetwork network;
 
-	private static Logger log = LoggerFactory.getLogger(ElmanWordDetector.class);
+	private static Logger log = LoggerFactory.getLogger(ElmanWordDetectorRunner.class);
 	public ElmanWordDetector(final int debinarizedLetterSize){
 	    this.debinarizedLetterSize = debinarizedLetterSize;
 	}
