@@ -17,8 +17,8 @@ public class FullDataWordWalker implements Runnable{
          walker = new WordWalker(50, 5, ElmanWordDetectorRunner.MAIN_WORD)
                  .withDataFile(csv)
                  .withMaximumError(5)
-                 .withStartSize(121)
-                 .withMaxSize(121)
+                 .withStartSize(122)
+                 .withMaxSize(122)
                  .saveNetwork(true)
                  .withDistancePattern(name+i);
     }

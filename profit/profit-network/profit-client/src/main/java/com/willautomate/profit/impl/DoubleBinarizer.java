@@ -90,4 +90,24 @@ public class DoubleBinarizer  {
 		}
 		return result;
 	}
+	   public static double[] normalize(final double[] data,final double threshold){
+	        final double[] result = new double[data.length];
+	        for (int i=0;i<data.length;i++){
+	            result[i] = (data[i] > threshold)?data[i] : 0;
+	        }
+	        return result;
+	    }
+	    
+	    public static double[] normalize(final double[] data,final int requiredNumbers){
+	        final Double[] result = debinarize(requiredNumbers,data);
+	        return ArrayUtils.toPrimitive(result);
+	    }
+	    public static Letter<Double> normalize(Letter<Double> letter, Double threshold){
+	        return new BasicLetter<Double>(ArrayUtils.toObject(normalize(ArrayUtils.toPrimitive(letter.getRawData()),threshold)));
+	    }
+	    
+	    public static Letter<Double> normalize(Letter<Double> letter, int neededLetters){
+	        Double[] winners = debinarize(neededLetters,letter);
+	        return new BasicLetter<Double>(binarize(letter.getRawData().length, winners));
+	    }
 }
