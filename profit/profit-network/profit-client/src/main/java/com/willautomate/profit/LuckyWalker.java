@@ -17,8 +17,8 @@ public class LuckyWalker implements Runnable{
          walker = new WordWalker(11, 2, ElmanWordDetectorRunner.LUCKY_WORD)
                  .withDataFile(csv)
                  .withMaximumError(0)
-                 .withStartSize(10)
-                 .withMaxSize(20)
+                 .withStartSize(1)
+                 .withMaxSize(16)
                  .saveNetwork(false)
                  .withDistancePattern(name+i);
     }
