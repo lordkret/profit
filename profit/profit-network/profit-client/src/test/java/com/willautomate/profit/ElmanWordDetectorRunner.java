@@ -49,16 +49,16 @@ public class ElmanWordDetectorRunner {
 
     @Test
     public void threeStream() throws InterruptedException{
-        ExecutorService executor = Executors.newFixedThreadPool(36);
+        ExecutorService executor = Executors.newFixedThreadPool(8);
         executor.execute(new FullDataWordWalker(101));
         for (int i = 0; i < 200; i++) {
             executor.execute(new LuckyWalker(i));
-//            executor.execute(new GrowingWordWalker(i,2));
-//            executor.execute(new GrowingWordWalker(i,4));
-//            executor.execute(new GrowingWordWalker(i,1));
+            executor.execute(new GrowingWordWalker(i,2));
+//            executor.execute(new GrowingWordWalker(i,3));
+            executor.execute(new GrowingWordWalker(i,1));
         }
         executor.shutdown();
-        executor.awaitTermination(24, TimeUnit.HOURS);
+        executor.awaitTermination(30, TimeUnit.HOURS);
     }
 
     @Test

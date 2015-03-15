@@ -26,6 +26,16 @@ public class WordWalker implements Runnable {
     private int startSize = 29;
     private int maxSize = 36;
 
+    private double distance;
+    private int wordSize;
+    
+    public double getDistance(){
+        return distance;
+    }
+    
+    public int getWordSize(){
+        return wordSize;
+    }
     private boolean writeToFileOnMinimal = false;
     private Path csv =  Paths.get("src/main/resources/fulldata.csv");
     private boolean save = true;
@@ -98,7 +108,7 @@ public class WordWalker implements Runnable {
             boolean wordDone = false;
             StringBuilder builder = new StringBuilder();
             double minimalDistance = 10;
-            int wordSize = startSize;
+            wordSize = startSize;
             Letter<Double> toPredict = WordFactory.fromCsv(binarizedLetterSize,csv, 1, 1, wordDataPattern).getLetters()[0];
 
             while (!wordDone) {
@@ -109,7 +119,7 @@ public class WordWalker implements Runnable {
                 Letter<Double> letterToUser = p.getLetters()[p.getLetters().length - 1];
                 Letter<Double> predicted = (Letter<Double>) network.predict(letterToUser);
 
-                double distance = DoubleLetterDistance.calculate(toPredict, predicted, debinarizedLetterSize);
+                distance = DoubleLetterDistance.calculate(toPredict, predicted, debinarizedLetterSize);
                 double[] predictedData = ArrayUtils.toPrimitive(DoubleBinarizer.debinarize(debinarizedLetterSize, predicted.getRawData()));
                 if (distance < minimalDistance) {
                     minimalDistance = distance;

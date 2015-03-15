@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.neo4j.examples.server.Connector;
+
 import com.willautomate.profit.impl.Analysis;
 import com.willautomate.profit.impl.DoubleBinarizer;
 
@@ -26,11 +28,17 @@ public class LuckyWalker implements Runnable{
     @Override
     public void run() {
         walker.run();
-        try {
-            Analysis.getInstance(name).analysis(DoubleBinarizer.debinarize(2,walker.uptrainAndPredict()));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        try{
+            Double[] predictedLetter = null;
+                predictedLetter = DoubleBinarizer.debinarize(2, walker.uptrainAndPredict());
+            int l1 = predictedLetter[0].intValue();
+            int l2 = predictedLetter[1].intValue();
+            
+                Analysis.getInstance(name).analysis(predictedLetter);
+                Connector.createPrediction(0,0,0,0,0,l1,l2,walker.getWordSize(),(int)walker.getDistance());
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
     }
 }

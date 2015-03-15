@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.neo4j.examples.server.Connector;
+
+import com.willautomate.profit.api.Letter;
 import com.willautomate.profit.impl.Analysis;
 import com.willautomate.profit.impl.DoubleBinarizer;
 
@@ -29,8 +32,17 @@ public class GrowingWordWalker implements Runnable{
 	@Override
 	public void run() {
 		walker.run();
-		try {
-            Analysis.getInstance(name).analysis(DoubleBinarizer.debinarize(5, walker.uptrainAndPredict()));
+		try{
+		Double[] predictedLetter = null;
+            predictedLetter = DoubleBinarizer.debinarize(5, walker.uptrainAndPredict());
+    	int m1 = predictedLetter[0].intValue();
+		int m2 = predictedLetter[1].intValue();
+		int m3 = predictedLetter[2].intValue();
+		int m4 = predictedLetter[3].intValue();
+		int m5 = predictedLetter[4].intValue();
+		
+            Analysis.getInstance(name).analysis(predictedLetter);
+            Connector.createPrediction(m1,m2,m3,m4,m5,0,0,walker.getWordSize(),(int)walker.getDistance());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
