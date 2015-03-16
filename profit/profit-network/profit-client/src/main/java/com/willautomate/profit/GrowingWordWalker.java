@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 
 import org.neo4j.examples.server.Connector;
 
+import com.willautomate.profit.api.DataConfiguration;
 import com.willautomate.profit.api.Letter;
 import com.willautomate.profit.impl.Analysis;
 import com.willautomate.profit.impl.DoubleBinarizer;
@@ -20,7 +21,7 @@ public class GrowingWordWalker implements Runnable{
 	}
 	public GrowingWordWalker(int i, int error) {
 		 csv = Paths.get("src/main/resources/fulldata.csv");
-		 walker = new WordWalker(50, 5, ElmanWordDetectorRunner.MAIN_WORD)
+		 walker = new WordWalker(50, 5, DataConfiguration.LetterPattern.MAIN.toPattern())
 				 .withDataFile(csv)
 				 .withMaximumError(error)
 				 .withStartSize(20)

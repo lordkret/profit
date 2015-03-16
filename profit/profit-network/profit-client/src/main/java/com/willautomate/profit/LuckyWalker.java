@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 
 import org.neo4j.examples.server.Connector;
 
+import com.willautomate.profit.api.DataConfiguration;
 import com.willautomate.profit.impl.Analysis;
 import com.willautomate.profit.impl.DoubleBinarizer;
 
@@ -16,7 +17,7 @@ public class LuckyWalker implements Runnable{
     
     public LuckyWalker(int i) {
          csv = Paths.get("src/main/resources/fulldata.csv");
-         walker = new WordWalker(11, 2, ElmanWordDetectorRunner.LUCKY_WORD)
+         walker = new WordWalker(11, 2, DataConfiguration.LetterPattern.LUCKY.toPattern())
                  .withDataFile(csv)
                  .withMaximumError(0)
                  .withStartSize(1)

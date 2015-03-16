@@ -14,7 +14,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.ElmanPattern;
-import org.encog.neural.pattern.JordanPattern;
 import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.slf4j.Logger;
@@ -32,7 +31,7 @@ public class ElmanWordDetector implements WordsDetector{
 
 	private BasicNetwork network;
 
-	private static Logger log = LoggerFactory.getLogger(ElmanWordDetectorRunner.class);
+	private static Logger log = LoggerFactory.getLogger(ElmanWordDetector.class);
 	public ElmanWordDetector(final int debinarizedLetterSize){
 	    this.debinarizedLetterSize = debinarizedLetterSize;
 	}

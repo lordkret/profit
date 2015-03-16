@@ -49,9 +49,9 @@ public class ElmanWordDetectorRunner {
 
     @Test
     public void threeStream() throws InterruptedException{
-        ExecutorService executor = Executors.newFixedThreadPool(8);
-        executor.execute(new FullDataWordWalker(101));
-        for (int i = 0; i < 200; i++) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+//        executor.execute(new FullDataWordWalker(101));
+        for (int i = 0; i < 30; i++) {
             executor.execute(new LuckyWalker(i));
             executor.execute(new GrowingWordWalker(i,2));
 //            executor.execute(new GrowingWordWalker(i,3));

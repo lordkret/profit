@@ -51,8 +51,8 @@ public class DataConfiguration {
 	}
 
 		public static enum LetterPattern {
-			MAIN(null,null,null,null,null,"L1","L2"),
-			LUCKY("M1","M2","M3","M4","M5",null,null);
+			LUCKY(null,null,null,null,null,"L1","L2"),
+			MAIN("M1","M2","M3","M4","M5",null,null);
 			
 			private String[] pattern;
 	    	LetterPattern(String... pattern) {

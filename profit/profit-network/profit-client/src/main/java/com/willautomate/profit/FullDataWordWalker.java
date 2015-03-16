@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.willautomate.profit.api.DataConfiguration;
 import com.willautomate.profit.impl.Analysis;
 import com.willautomate.profit.impl.DoubleBinarizer;
 
@@ -14,7 +15,7 @@ public class FullDataWordWalker implements Runnable{
     
     public FullDataWordWalker(int i) {
          csv = Paths.get("src/main/resources/fulldata.csv");
-         walker = new WordWalker(50, 5, ElmanWordDetectorRunner.MAIN_WORD)
+         walker = new WordWalker(50, 5, DataConfiguration.LetterPattern.MAIN.toPattern())
                  .withDataFile(csv)
                  .withMaximumError(5)
                  .withStartSize(122)
