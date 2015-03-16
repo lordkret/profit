@@ -126,7 +126,7 @@ public class Connector
             sendTransactionalCypherQuery(String.format("create (n:Number {value:%s})", i));
         }
     }
-    private static void sendTransactionalCypherQuery(String query) {
+    public static String sendTransactionalCypherQuery(String query) {
         // START SNIPPET: queryAllNodes
         final String txUri = SERVER_ROOT_URI + "transaction/commit";
         WebResource resource = Client.create().resource( txUri );
@@ -137,13 +137,14 @@ public class Connector
                 .type( MediaType.APPLICATION_JSON )
                 .entity( payload )
                 .post( ClientResponse.class );
-        
+        String result = response.getEntity( String.class ) ;
         System.out.println( String.format(
                 "POST [%s] to [%s], status code [%d], returned data: "
                         + System.getProperty( "line.separator" ) + "%s",
                 payload, txUri, response.getStatus(),
-                response.getEntity( String.class ) ) );
+                result ) );
          response.close();
+         return result;
         // END SNIPPET: queryAllNodes
     }
 
