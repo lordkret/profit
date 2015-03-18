@@ -36,11 +36,11 @@ public class Beemo {
 
 	}
 	private static Runnable checkForKill = new Runnable() {
-
+ 
 		@Override
 		public void run() {
 			String query = String.format("match (client:Client{name:'%s'}) return client.status, client.threads", getClientName());
-			String update = String.format("match (client:Client{name:'%s'}) set client.letterRatio='%s/s',client.predictionRatio='%s/s'", getClientName(),letters.getAndSet(0)/10,predictions.getAndSet(0)/10);
+			String update = String.format("match (client:Client{name:'%s'}) set client.letterRatio='%s/s'", getClientName(),letters.getAndSet(0)/10);
 			Connector.sendTransactionalCypherQuery(update);
 			String result = Connector.sendTransactionalCypherQuery(query);
 			if (result.contains("kill")){
@@ -120,7 +120,10 @@ public class Beemo {
 	}
 	
 	public static synchronized void finishedPrediction(){
-		predictions.incrementAndGet();
+		int preds = predictions.incrementAndGet();
+		String update = String.format("match (client:Client{name:'%s'}) set client.letterRatio='%s/s',client.predictionRatio='%s'", getClientName(),letters.getAndSet(0)/10,preds);
+		Connector.sendTransactionalCypherQuery(update);
+	
 	}
 	
 	

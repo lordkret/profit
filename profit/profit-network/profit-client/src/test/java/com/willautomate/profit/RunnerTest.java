@@ -7,8 +7,8 @@ import org.junit.Test;
 public class RunnerTest {
 
 	@Test
-	public void test() throws InterruptedException {
-		new ElmanWordDetectorRunner().threeStream();
+	public void test() throws Exception {
+		Client.main(null);
 	}
 
 }

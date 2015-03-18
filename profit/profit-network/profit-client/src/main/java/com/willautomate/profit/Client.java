@@ -8,6 +8,7 @@ public class Client {
 
 	public static final ThreadPoolExecutor letterService = new LetterStatisticalCachedThreadPoolService();
 	public static final ThreadPoolExecutor wordSerice = new WordStatisticalCachedThreadPoolService();
+	
 	public static void main(String[] objs) throws Exception{
 		System.out.println("Starting");
 		Beemo.register();
