@@ -18,10 +18,22 @@
  */
 package org.neo4j.examples.server;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.MediaType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -29,296 +41,170 @@ import com.sun.jersey.api.client.WebResource;
 
 public class Connector
 {
-    private static final String SERVER_ROOT_URI = "http://profit.willautomate.com:7474/db/data/";
+	private static final String SERVER_ROOT_URI = "http://profit.willautomate.com:7474/db/data/";
 
-    public static void main( String[] args ) throws URISyntaxException
-    {
-        checkDatabaseIsRunning();
+	public static void main( String[] args ) throws URISyntaxException
+	{
+		checkDatabaseIsRunning();
 
-        // START SNIPPET: nodesAndProps
-//        URI firstNode = createNode();
-//        addProperty( firstNode, "value", "1" );
-//        URI secondNode = createNode();
-//        addProperty( secondNode, "value", "2" );
-        // END SNIPPET: nodesAndProps
 
-        // START SNIPPET: addRel
-//        URI relationshipUri = addRelationship( firstNode, secondNode, "singer",
-//                "{ \"from\" : \"1976\", \"until\" : \"1986\" }" );
-        // END SNIPPET: addRel
+		//        createNumbers();
+		//        [14.0, 23.0, 24.0, 30.0, 49.0]
+		//        createLetter(11,23,26,38,44,1,8);
+		//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
+	}
 
-        // START SNIPPET: addMetaToRel
-//        addMetadataToProperty( relationshipUri, "stars", "5" );
-        // END SNIPPET: addMetaToRel
+	public static void createPrediction(int m1,int m2,int m3, int m4, int m5, int l1, int l2, int wordSize, int distance){
+		StringBuilder sb = new StringBuilder("match (for:Letter) ");
+		if (m1 != 0){
+			sb.append(",(m1:Number),"
+					+ "(m2:Number),"
+					+ "(m3:Number),"
+					+ "(m4:Number),"
+					+ "(m5:Number)");
+		}
+		if (l1 != 0){
+			sb.append(",(l1:Number),"
+					+ "(l2:Number)");
+		}
+		sb.append(" where ");
+		if (m1 != 0){
+			sb.append(String.format("m1.value=%s and m2.value=%s and m3.value=%s and m4.value=%s and m5.value=%s and ",m1,m2,m3,m4,m5));
+		}
+		if (l1 != 0){
+			sb.append(String.format("l1.value=%s and l2.value=%s and " , l1,l2));
+		}
+		sb.append(" has(for.LATEST) ");
+		sb.append(String.format("create (n:Letter:Prediction {wordsize:%s, distance:%s}) "
+				+ "create (n)-[:FOR]->(for) ",wordSize,distance));
+		if (m1 != 0){
+			sb.append("create (n)-[:MAIN]->(m1) "
+					+ "create (n)-[:MAIN]->(m2) "
+					+ "create (n)-[:MAIN]->(m3) "
+					+ "create (n)-[:MAIN]->(m4) "
+					+ "create (n)-[:MAIN]->(m5) ");
+		}
+		if (l1 != 0){
+			sb.append("create (n)-[:LUCKY]->(l1) "
+					+ "create (n)-[:LUCKY]->(l2) ");
+		}
+		sb.append(" return n");
+		sendTransactionalCypherQuery(sb.toString());
 
-        // START SNIPPET: queryForSingers
-//        findSingersInBands( firstNode );
-        // END SNIPPET: queryForSingers
-        
-//        createNumbers();
-//        [14.0, 23.0, 24.0, 30.0, 49.0]
-//        createLetter(11,23,26,38,44,1,8);
-//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
-    }
+	}
+	private static void createLetter(int m1,int m2,int m3, int m4, int m5, int l1, int l2){
+		sendTransactionalCypherQuery( String.format("match "
+				+ "(m1:Number),"
+				+ "(m2:Number),"
+				+ "(m3:Number),"
+				+ "(m4:Number),"
+				+ "(m5:Number),"
+				+ "(l1:Number),"
+				+ "(l2:Number) "
+				+ "where m1.value=%s and m2.value=%s and m3.value=%s and m4.value=%s and m5.value=%s"
+				+ " and l1.value=%s and l2.value=%s"
+				+ " create (n:Letter) "
+				+ " create (n)-[:MAIN]->(m1) "
+				+ "create (n)-[:MAIN]->(m2) "
+				+ "create (n)-[:MAIN]->(m3) "
+				+ "create (n)-[:MAIN]->(m4) "
+				+ "create (n)-[:MAIN]->(m5) "
+				+ "create (n)-[:LUCKY]->(l1) "
+				+ "create (n)-[:LUCKY]->(l2) "
+				+ "return Id(n)",m1,m2,m3,m4,m5,l1,l2));
 
-    public static void createPrediction(int m1,int m2,int m3, int m4, int m5, int l1, int l2, int wordSize, int distance){
-        StringBuilder sb = new StringBuilder("match (for:Letter) ");
-        if (m1 != 0){
-            sb.append(",(m1:Number),"
-                    + "(m2:Number),"
-                    + "(m3:Number),"
-                    + "(m4:Number),"
-                    + "(m5:Number)");
-        }
-        if (l1 != 0){
-            sb.append(",(l1:Number),"
-                    + "(l2:Number)");
-        }
-        sb.append(" where ");
-        if (m1 != 0){
-            sb.append(String.format("m1.value=%s and m2.value=%s and m3.value=%s and m4.value=%s and m5.value=%s and ",m1,m2,m3,m4,m5));
-        }
-        if (l1 != 0){
-            sb.append(String.format("l1.value=%s and l2.value=%s and " , l1,l2));
-        }
-        sb.append(" has(for.LATEST) ");
-        sb.append(String.format("create (n:Letter:Prediction {wordsize:%s, distance:%s}) "
-                + "create (n)-[:FOR]->(for) ",wordSize,distance));
-        if (m1 != 0){
-            sb.append("create (n)-[:MAIN]->(m1) "
-                + "create (n)-[:MAIN]->(m2) "
-                + "create (n)-[:MAIN]->(m3) "
-                + "create (n)-[:MAIN]->(m4) "
-                + "create (n)-[:MAIN]->(m5) ");
-        }
-        if (l1 != 0){
-            sb.append("create (n)-[:LUCKY]->(l1) "
-                    + "create (n)-[:LUCKY]->(l2) ");
-        }
-        sb.append(" return n");
-        sendTransactionalCypherQuery(sb.toString());
-        
-    }
-    private static void createLetter(int m1,int m2,int m3, int m4, int m5, int l1, int l2){
-        sendTransactionalCypherQuery( String.format("match "
-                + "(m1:Number),"
-                + "(m2:Number),"
-                + "(m3:Number),"
-                + "(m4:Number),"
-                + "(m5:Number),"
-                + "(l1:Number),"
-                + "(l2:Number) "
-                + "where m1.value=%s and m2.value=%s and m3.value=%s and m4.value=%s and m5.value=%s"
-                + " and l1.value=%s and l2.value=%s"
-                + " create (n:Letter) "
-                + " create (n)-[:MAIN]->(m1) "
-                + "create (n)-[:MAIN]->(m2) "
-                + "create (n)-[:MAIN]->(m3) "
-                + "create (n)-[:MAIN]->(m4) "
-                + "create (n)-[:MAIN]->(m5) "
-                + "create (n)-[:LUCKY]->(l1) "
-                + "create (n)-[:LUCKY]->(l2) "
-                + "return Id(n)",m1,m2,m3,m4,m5,l1,l2));
-        
-    }
-    private static void createNumbers(){
-        for (int i=1;i<=50;i++){
-            sendTransactionalCypherQuery(String.format("create (n:Number {value:%s})", i));
-        }
-    }
-    public static String sendTransactionalCypherQuery(String query) {
-        // START SNIPPET: queryAllNodes
-        final String txUri = SERVER_ROOT_URI + "transaction/commit";
-        WebResource resource = Client.create().resource( txUri );
+	}
+	private static void createNumbers(){
+		for (int i=1;i<=50;i++){
+			sendTransactionalCypherQuery(String.format("create (n:Number {value:%s})", i));
+		}
+	}
+	public static String sendTransactionalCypherQuery(String query) {
 
-        String payload = "{\"statements\" : [ {\"statement\" : \"" +query + "\"} ]}";
-        ClientResponse response = resource
-                .accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON )
-                .entity( payload )
-                .post( ClientResponse.class );
-        String result = response.getEntity( String.class ) ;
-        System.out.println( String.format(
-                "POST [%s] to [%s], status code [%d], returned data: "
-                        + System.getProperty( "line.separator" ) + "%s",
-                payload, txUri, response.getStatus(),
-                result ) );
-         response.close();
-         return result;
-        // END SNIPPET: queryAllNodes
-    }
+		String payload = "{\"statements\" : [ {\"statement\" : \"" +query + "\"} ]}";
 
-    private static void findSingersInBands( URI startNode )
-            throws URISyntaxException
-    {
-        // START SNIPPET: traversalDesc
-        // TraversalDefinition turns into JSON to send to the Server
-        TraversalDefinition t = new TraversalDefinition();
-        t.setOrder( TraversalDefinition.DEPTH_FIRST );
-        t.setUniqueness( TraversalDefinition.NODE );
-        t.setMaxDepth( 10 );
-        t.setReturnFilter( TraversalDefinition.ALL );
-        t.setRelationships( new Relation( "singer", Relation.OUT ) );
-        // END SNIPPET: traversalDesc
+		return sendIfPossibleOrPostpone(payload);
+	}
 
-        // START SNIPPET: traverse
-        URI traverserUri = new URI( startNode.toString() + "/traverse/node" );
-        WebResource resource = Client.create()
-                .resource( traverserUri );
-        String jsonTraverserPayload = t.toJson();
-        ClientResponse response = resource.accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON )
-                .entity( jsonTraverserPayload )
-                .post( ClientResponse.class );
 
-        System.out.println( String.format(
-                "POST [%s] to [%s], status code [%d], returned data: "
-                        + System.getProperty( "line.separator" ) + "%s",
-                jsonTraverserPayload, traverserUri, response.getStatus(),
-                response.getEntity( String.class ) ) );
-        response.close();
-        // END SNIPPET: traverse
-    }
+	private static void checkDatabaseIsRunning()
+	{
+		WebResource resource = Client.create()
+				.resource( SERVER_ROOT_URI );
+		ClientResponse response = resource.get( ClientResponse.class );
 
-    // START SNIPPET: insideAddMetaToProp
-    private static void addMetadataToProperty( URI relationshipUri,
-            String name, String value ) throws URISyntaxException
-    {
-        URI propertyUri = new URI( relationshipUri.toString() + "/properties" );
-        String entity = toJsonNameValuePairCollection( name, value );
-        WebResource resource = Client.create()
-                .resource( propertyUri );
-        ClientResponse response = resource.accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON )
-                .entity( entity )
-                .put( ClientResponse.class );
+		log.debug( String.format( "GET on [%s], status code [%d]",
+				SERVER_ROOT_URI, response.getStatus() ) );
+		response.close();
+	}
 
-        System.out.println( String.format(
-                "PUT [%s] to [%s], status code [%d]", entity, propertyUri,
-                response.getStatus() ) );
-        response.close();
-    }
+	private static BlockingQueue<String> queries = new LinkedBlockingQueue<String>();
+	private static Logger log = LoggerFactory.getLogger(Connector.class);
 
-    // END SNIPPET: insideAddMetaToProp
+	private static String sendIfPossibleOrPostpone(String query){
+		try {
+			return sendQuery(query);
+		} catch (Throwable issue){
+			log.info("Can't send now due to {}. Will retry later",issue);
+			queries.add(query);
+			return "";
+		}
+	}
 
-    private static String toJsonNameValuePairCollection( String name,
-            String value )
-    {
-        return String.format( "{ \"%s\" : \"%s\" }", name, value );
-    }
+	private static String sendQuery(String query){
+		final String txUri = SERVER_ROOT_URI + "transaction/commit";
+		WebResource resource = Client.create().resource( txUri );
 
-    private static URI createNode()
-    {
-        // START SNIPPET: createNode
-        final String nodeEntryPointUri = SERVER_ROOT_URI + "node";
-        // http://localhost:7474/db/data/node
+		
+		ClientResponse response = resource
+				.accept( MediaType.APPLICATION_JSON )
+				.type( MediaType.APPLICATION_JSON )
+				.entity( query )
+				.post( ClientResponse.class );
+		String result = response.getEntity( String.class ) ;
+		log.debug( String.format(
+				"POST [%s] to [%s], status code [%d], returned data: "
+						+ System.getProperty( "line.separator" ) + "%s",
+						query, txUri, response.getStatus(),
+						result ) );
+		response.close();
+		return result;
+	}
 
-        WebResource resource = Client.create()
-                .resource( nodeEntryPointUri );
-        // POST {} to the node entry point URI
-        ClientResponse response = resource.accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON )
-                .entity( "{}" )
-                .post( ClientResponse.class );
+	private static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+	static {
+		service.scheduleAtFixedRate(new Runnable() {		
+			@Override
+			public void run() {sendQuery();
+			}
+		}, 10, 10, TimeUnit.SECONDS);
+	}
+	private static void sendQuery(){
 
-        final URI location = response.getLocation();
-        System.out.println( String.format(
-                "POST to [%s], status code [%d], location header [%s]",
-                nodeEntryPointUri, response.getStatus(), location.toString() ) );
-        response.close();
+		if (queries.size() > 0){
+			String query = queries.peek();
+			try {
+				sendQuery(query);
+				queries.poll();
 
-        return location;
-        // END SNIPPET: createNode
-    }
+			} catch (Throwable issue){
+				log.info("A bit of issue. Will try later");
+			} finally {
 
-    // START SNIPPET: insideAddRel
-    private static URI addRelationship( URI startNode, URI endNode,
-            String relationshipType, String jsonAttributes )
-            throws URISyntaxException
-    {
-        URI fromUri = new URI( startNode.toString() + "/relationships" );
-        String relationshipJson = generateJsonRelationship( endNode,
-                relationshipType, jsonAttributes );
-
-        WebResource resource = Client.create()
-                .resource( fromUri );
-        // POST JSON to the relationships URI
-        ClientResponse response = resource.accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON )
-                .entity( relationshipJson )
-                .post( ClientResponse.class );
-
-        final URI location = response.getLocation();
-        System.out.println( String.format(
-                "POST to [%s], status code [%d], location header [%s]",
-                fromUri, response.getStatus(), location.toString() ) );
-
-        response.close();
-        return location;
-    }
-    // END SNIPPET: insideAddRel
-
-    private static String generateJsonRelationship( URI endNode,
-            String relationshipType, String... jsonAttributes )
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append( "{ \"to\" : \"" );
-        sb.append( endNode.toString() );
-        sb.append( "\", " );
-
-        sb.append( "\"type\" : \"" );
-        sb.append( relationshipType );
-        if ( jsonAttributes == null || jsonAttributes.length < 1 )
-        {
-            sb.append( "\"" );
-        }
-        else
-        {
-            sb.append( "\", \"data\" : " );
-            for ( int i = 0; i < jsonAttributes.length; i++ )
-            {
-                sb.append( jsonAttributes[i] );
-                if ( i < jsonAttributes.length - 1 )
-                { // Miss off the final comma
-                    sb.append( ", " );
-                }
-            }
-        }
-
-        sb.append( " }" );
-        return sb.toString();
-    }
-
-    private static void addProperty( URI nodeUri, String propertyName,
-            String propertyValue )
-    {
-        // START SNIPPET: addProp
-        String propertyUri = nodeUri.toString() + "/properties/" + propertyName;
-        // http://localhost:7474/db/data/node/{node_id}/properties/{property_name}
-
-        WebResource resource = Client.create()
-                .resource( propertyUri );
-        ClientResponse response = resource.accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON )
-                .entity( "\"" + propertyValue + "\"" )
-                .put( ClientResponse.class );
-
-        System.out.println( String.format( "PUT to [%s], status code [%d]",
-                propertyUri, response.getStatus() ) );
-        response.close();
-        // END SNIPPET: addProp
-    }
-
-    private static void checkDatabaseIsRunning()
-    {
-        // START SNIPPET: checkServer
-        WebResource resource = Client.create()
-                .resource( SERVER_ROOT_URI );
-        ClientResponse response = resource.get( ClientResponse.class );
-
-        System.out.println( String.format( "GET on [%s], status code [%d]",
-                SERVER_ROOT_URI, response.getStatus() ) );
-        response.close();
-        // END SNIPPET: checkServer
-    }
+			}
+		}
+	}
+	
+	public static void disconnect(){
+		try {
+			service.awaitTermination(15, TimeUnit.SECONDS);
+			for (String q : queries){
+				Files.write(Paths.get("unsentQueries"), q.getBytes());
+			}
+		} catch (InterruptedException | IOException e) {
+			// TODO Auto-generated catch block
+			log.error("disconnecting issue",e);
+		}
+	}
+	
 }

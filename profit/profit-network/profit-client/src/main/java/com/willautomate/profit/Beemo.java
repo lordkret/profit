@@ -2,21 +2,23 @@ package com.willautomate.profit;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.neo4j.examples.server.Connector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Beemo {
 
-	private static ScheduledExecutorService clientRemoteService = Executors.newSingleThreadScheduledExecutor();
+	static ScheduledExecutorService clientRemoteService = Executors.newSingleThreadScheduledExecutor();
 	private static AtomicBoolean unregistered = new AtomicBoolean(true);
 	private static AtomicInteger letters = new AtomicInteger(0);
 	private static AtomicInteger predictions = new AtomicInteger(0);
@@ -40,7 +42,7 @@ public class Beemo {
 		@Override
 		public void run() {
 			String query = String.format("match (client:Client{name:'%s'}) return client.status, client.threads", getClientName());
-			String update = String.format("match (client:Client{name:'%s'}) set client.letterRatio='%s/s'", getClientName(),letters.getAndSet(0)/10);
+			String update = String.format("match (client:Client{name:'%s'}) set client.letterRatio='%s/s', client.lastUpdate='%s'", getClientName(),letters.getAndSet(0)/10,new Date());
 			Connector.sendTransactionalCypherQuery(update);
 			String result = Connector.sendTransactionalCypherQuery(query);
 			if (result.contains("kill")){
@@ -53,14 +55,13 @@ public class Beemo {
 			}
 		}
 	};
+	private static final Logger log = LoggerFactory.getLogger(Beemo.class);
 	private static Callable register = new Callable() {
 		
 		@Override
 		public Object call() throws Exception {
 			shutdownLock.lock();
-			System.out.println("locked");
 			String getClient = String.format("match (client:Client{name:'%s'}) return client",getClientName() );
-			System.out.println(getClient);
 			String clientOutput = Connector.sendTransactionalCypherQuery(getClient);
 			String query = "";
 			if (clientOutput.contains(getClientName())){
@@ -69,7 +70,7 @@ public class Beemo {
 			query = String.format("create (client:Client{name:'%s', status:'alive'}) ",getClientName() ); 
 			}
 			Connector.sendTransactionalCypherQuery(query);
-			System.out.println("registered " + clientOutput);
+			log.info("registered " + clientOutput);
 			unregistered.set(false);
 			return null;
 		}
@@ -87,7 +88,7 @@ public class Beemo {
 	};
 	public static void register() throws InterruptedException, UnknownHostException, ExecutionException {
 		
-		System.out.println("registering client " );
+		log.info("registering client " );
 		clientRemoteService.submit(register).get();
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 			
@@ -96,7 +97,7 @@ public class Beemo {
 				unregister();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("Problem unregistering",e);
 			}
 			}
 		}));
@@ -114,6 +115,7 @@ public class Beemo {
 		if (! clientRemoteService.isTerminated()){
 			clientRemoteService.awaitTermination(10, TimeUnit.MINUTES);
 		}
+		Connector.disconnect();
 	}
 	public static synchronized void finishedLetter(){
 		letters.incrementAndGet();
