@@ -110,7 +110,7 @@ public class WordWalker implements Runnable {
             double minimalDistance = 10;
             wordSize = startSize;
             Letter<Double> toPredict = WordFactory.fromCsv(binarizedLetterSize,csv, 1, 1, wordDataPattern).getLetters()[0];
-
+            
             while (!wordDone) {
                 Word p = WordFactory.fromCsv(binarizedLetterSize,csv, 3, wordSize, wordDataPattern);
                 network.clean();
@@ -118,7 +118,6 @@ public class WordWalker implements Runnable {
                 network.train(p);
                 Letter<Double> letterToUser = p.getLetters()[p.getLetters().length - 1];
                 Letter<Double> predicted = (Letter<Double>) network.predict(letterToUser);
-
                 distance = DoubleLetterDistance.calculate(toPredict, predicted, debinarizedLetterSize);
                 double[] predictedData = ArrayUtils.toPrimitive(DoubleBinarizer.debinarize(debinarizedLetterSize, predicted.getRawData()));
                 if (distance < minimalDistance) {

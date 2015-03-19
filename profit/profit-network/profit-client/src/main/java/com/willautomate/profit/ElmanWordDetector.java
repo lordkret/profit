@@ -13,12 +13,13 @@ import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.neural.pattern.ElmanPattern;
 import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.encog.persist.EncogDirectoryPersistence;
+import org.encog.util.simple.EncogUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.willautomate.profit.api.Letter;
 import com.willautomate.profit.api.Word;
 import com.willautomate.profit.api.WordFactory;
@@ -41,7 +42,7 @@ public class ElmanWordDetector implements WordsDetector{
 	public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
 	    NeuralNetworkPattern pattern;
 	    
-	        pattern = new ElmanPattern();
+	        pattern = new ElmannPatternStep();
 	    
 	    
         pattern.setInputNeurons(letterSize);
@@ -52,7 +53,7 @@ public class ElmanWordDetector implements WordsDetector{
     }
     private boolean doesRememberEverything(MLDataSet data){
     	boolean result = true;
-    	final Iterator<MLDataPair> pairs = data.iterator();
+    	/**final Iterator<MLDataPair> pairs = data.iterator();
     	MLDataPair pair = null;
     	
     	Letter<Double> ideal = null;
@@ -62,27 +63,28 @@ public class ElmanWordDetector implements WordsDetector{
     	    Letter<Double> toCompute = new BasicLetter<Double>(ArrayUtils.toObject(pair.getInput().getData()));
     		computed =  (Letter<Double>) predict(toCompute);
     		ideal = new BasicLetter<Double>(ArrayUtils.toObject(pair.getIdeal().getData()));
-    		double distance = DoubleLetterDistance.calculate(computed, ideal, debinarizedLetterSize);
+    		double distance = DoubleLetterDistance.calculate(ideal,computed , debinarizedLetterSize);
     		result = result && (distance == 0);
-    		log.debug("distance {} effect of {}",distance,Arrays.toString(DoubleBinarizer.debinarize(debinarizedLetterSize,toCompute.getRawData())));
-    	}
+    		log.info("distance {} effect of {}",distance,Arrays.toString(DoubleBinarizer.debinarize(debinarizedLetterSize,toCompute.getRawData())));
+    	}**/
     	return result;
     }
 	public void train(Word word) {
 		if (network == null){
-			network = createNetwork(word.getLetters()[0].size(),word.size());
+			network = createNetwork(word.getLetters()[0].size(),Math.max(word.size(),15));
 		}
 		
 		MLDataSet set = WordFactory.toDataSet(word);
 
 		final MLTrain trainMain = new ResilientPropagation((ContainsFlat)network, set); 
-
+		
 //		trainMain.addStrategy(new Greedy());
 		
 		while (!doesRememberEverything(set)) {
-//			EncogUtility.trainToError(network, set, 0.00007);
-			trainMain.iteration();
-			log.debug("error {}",trainMain.getError());
+			
+			EncogUtility.trainToError(network, set, 0);
+//			trainMain.iteration();
+			log.info("error {}",trainMain.getError());
 		}
 		trainMain.finishTraining();
 	}
