@@ -14,21 +14,23 @@ public class Client {
 	public static void main(String[] objs) throws Exception{
 		System.out.println("Starting");
 		Beemo.register();
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 50; i++) {
 			wordSerice.execute(new LuckyWalker(i,NetworkPattern.Elmann));
 			wordSerice.execute(new LuckyWalker(i,NetworkPattern.ElmannStep));
-			//wordSerice.execute(new GrowingWordWalker(i,2));
+			wordSerice.execute(new GrowingWordWalker(i,2,NetworkPattern.Elmann));
+			wordSerice.execute(new GrowingWordWalker(i,2,NetworkPattern.ElmannStep));
 //            wordSerice.execute(new GrowingWordWalker(i,3));
 //			wordSerice.execute(new GrowingWordWalker(i,1));
         }
-		
-//		Beemo.shutdownLock.lock();
+		wordSerice.awaitTermination(6, TimeUnit.HOURS);
+		System.out.println("Ready to stop");
+		Beemo.shutdownLock.lock();
 		Beemo.unregister();
 		letterService.shutdownNow();
 		
 		wordSerice.shutdownNow();
 		
 		System.out.println("Stopping");
-//		Beemo.shutdownLock.unlock();
+		Beemo.shutdownLock.unlock();
 	}
 }

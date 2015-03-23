@@ -50,7 +50,7 @@ public class Connector
 
 		//        createNumbers();
 		//        [14.0, 23.0, 24.0, 30.0, 49.0]
-		//        createLetter(11,23,26,38,44,1,8);
+		        createLetter(3,14,37,42,48,1,10);
 		//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
 	}
 
