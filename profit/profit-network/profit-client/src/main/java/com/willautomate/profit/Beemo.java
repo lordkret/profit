@@ -123,7 +123,7 @@ public class Beemo {
 	
 	public static synchronized void finishedPrediction(){
 		int preds = predictions.incrementAndGet();
-		String update = String.format("match (client:Client{name:'%s'}) set client.letterRatio='%s/s',client.predictionRatio='%s'", getClientName(),letters.getAndSet(0)/10,preds);
+		String update = String.format("match (client:Client{name:'%s'}) set client.letterRatio='%s/s',client.predictionRatio='%s', client.lastPrediction='%s'", getClientName(),letters.getAndSet(0)/10,preds,new Date());
 		Connector.sendTransactionalCypherQuery(update);
 	
 	}

@@ -8,6 +8,7 @@ import org.neo4j.examples.server.Connector;
 
 import com.willautomate.profit.api.DataConfiguration;
 import com.willautomate.profit.api.Letter;
+import com.willautomate.profit.api.WalkerConfiguration.NetworkPattern;
 import com.willautomate.profit.impl.Analysis;
 import com.willautomate.profit.impl.DoubleBinarizer;
 
@@ -15,18 +16,20 @@ public class GrowingWordWalker implements Runnable{
 	private static final String name = "GrowingWord";
 	private Path csv;
 	WordWalker walker;
-	
-	public GrowingWordWalker(int i){
-		this(i,1);
+	private final NetworkPattern pattern;
+	public GrowingWordWalker(int i,NetworkPattern pattern){
+		this(i,1,pattern);
 	}
-	public GrowingWordWalker(int i, int error) {
+	public GrowingWordWalker(int i, int error, NetworkPattern pattern) {
 		 csv = Paths.get("src/main/resources/fulldata.csv");
+		 this.pattern = pattern;
 		 walker = new WordWalker(50, 5, DataConfiguration.LetterPattern.MAIN.toPattern())
 				 .withDataFile(csv)
 				 .withMaximumError(error)
 				 .withStartSize(20)
 				 .withMaxSize(122)
 				 .saveNetwork(false)
+				 .withPattern(pattern)
 				 .withDistancePattern(name+i);
 	}
 
@@ -43,7 +46,7 @@ public class GrowingWordWalker implements Runnable{
 		int m5 = predictedLetter[4].intValue();
 		
             Analysis.getInstance(name).analysis(predictedLetter);
-            Connector.createPrediction(m1,m2,m3,m4,m5,0,0,walker.getWordSize(),(int)walker.getDistance());
+            Connector.createPrediction(m1,m2,m3,m4,m5,0,0,walker.getWordSize(),(int)walker.getDistance(),pattern.toString());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

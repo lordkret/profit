@@ -54,7 +54,7 @@ public class Connector
 		//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
 	}
 
-	public static void createPrediction(int m1,int m2,int m3, int m4, int m5, int l1, int l2, int wordSize, int distance){
+	public static void createPrediction(int m1,int m2,int m3, int m4, int m5, int l1, int l2, int wordSize, int distance, String pattern){
 		StringBuilder sb = new StringBuilder("match (for:Letter) ");
 		if (m1 != 0){
 			sb.append(",(m1:Number),"
@@ -75,8 +75,8 @@ public class Connector
 			sb.append(String.format("l1.value=%s and l2.value=%s and " , l1,l2));
 		}
 		sb.append(" has(for.LATEST) ");
-		sb.append(String.format("create (n:Letter:Prediction {wordsize:%s, distance:%s}) "
-				+ "create (n)-[:FOR]->(for) ",wordSize,distance));
+		sb.append(String.format("create (n:Prediction:Letter {wordsize:%s, distance:%s, pattern:%s}) "
+				+ "create (n)-[:FOR]->(for) ",wordSize,distance,pattern));
 		if (m1 != 0){
 			sb.append("create (n)-[:MAIN]->(m1) "
 					+ "create (n)-[:MAIN]->(m2) "
@@ -167,6 +167,12 @@ public class Connector
 						+ System.getProperty( "line.separator" ) + "%s",
 						query, txUri, response.getStatus(),
 						result ) );
+		if (response.getStatus()!=200)
+			log.warn(String.format(
+					"POST [%s] to [%s], status code [%d], returned data: "
+							+ System.getProperty( "line.separator" ) + "%s",
+							query, txUri, response.getStatus(),
+							result ));
 		response.close();
 		return result;
 	}

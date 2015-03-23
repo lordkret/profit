@@ -63,6 +63,7 @@ public class WalkerConfiguration {
 	
 	public static enum NetworkPattern {
 		Elmann, 
+		ElmannStep,
 		Jordan,
 		Basic;
 		

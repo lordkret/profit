@@ -1,10 +1,12 @@
 package com.willautomate.profit.impl;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.willautomate.profit.api.Letter;
 
 public class DoubleLetterDistance {
@@ -29,5 +31,15 @@ public class DoubleLetterDistance {
 		}
 		log.trace("Comparing {} to {}. Distance {}",Arrays.toString(aData),Arrays.toString(bData),distance);
 		return distance;
+	}
+	
+	public static List<Integer> calculate(double[] a, double[] b){
+		List<Integer> result = Lists.newArrayList();
+		for (int i=0;i<a.length;i++){
+			if (a[i] != b[i]){
+				result.add(i);
+			}
+		}
+		return result;
 	}
 }

@@ -3,26 +3,26 @@ package com.willautomate.profit;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.encog.Encog;
+import org.encog.plugin.system.SystemLoggingPlugin;
+import org.encog.util.logging.EncogLogging;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.willautomate.profit.api.Letter;
+import com.willautomate.profit.api.WalkerConfiguration.NetworkPattern;
 import com.willautomate.profit.api.Word;
 import com.willautomate.profit.api.WordFactory;
 import com.willautomate.profit.impl.DoubleBinarizer;
-import com.willautomate.profit.impl.DoubleLetterDistance;
 
 public class ElmanWordDetectorRunner {
 
@@ -30,40 +30,28 @@ public class ElmanWordDetectorRunner {
 
     public static final String[] MAIN_WORD = {"M1", "M2", "M3", "M4", "M5", null, null};
     public static final String[] LUCKY_WORD = {null,null,null,null,null,"L1","L2"};
-    @Test
-    public void trainingTest() throws IOException, InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(36);
-        
-        for (int i = 0; i < 40; i++) {
-            Runnable worker = new WordWalker(50,5,MAIN_WORD).withStartSize(15).withMaximumError(1).withMaxSize(60).withDistancePattern("main-"+i);
-            executor.execute(worker);
-            executor.execute(new WordWalker(11, 2, LUCKY_WORD).withStartSize(1).withMaxSize(30).withMaximumError(0).withDistancePattern("lucky-"+i));
-
-            if (i%3 == 0){
-                executor.execute(new WordWalker(50,5,MAIN_WORD).withStartSize(29).withMaximumError(0).withMaxSize(36).withDistancePattern("main0-"+i));
-            }
-        }
-        executor.shutdown();
-        executor.awaitTermination(2, TimeUnit.DAYS);
-    }
-
+   
     @Test
     public void threeStream() throws InterruptedException{
-        ExecutorService executor = Executors.newFixedThreadPool(5);
+//    	SystemLoggingPlugin logging = (SystemLoggingPlugin)Encog.getInstance().getLoggingPlugin();
+//    	logging.setLogLevel(EncogLogging.LEVEL_DEBUG);
+//    	logging.startConsoleLogging();
+        ExecutorService executor = Executors.newFixedThreadPool(2);
 //        executor.execute(new FullDataWordWalker(101));
-        for (int i = 0; i < 100; i++) {
-            executor.execute(new LuckyWalker(i));
-            executor.execute(new GrowingWordWalker(i,2));
+        for (int i = 0; i < 1; i++) {
+            executor.execute(new LuckyWalker(i,NetworkPattern.ElmannStep));
+            executor.execute(new LuckyWalker(10+i,NetworkPattern.Elmann));
+//            executor.execute(new GrowingWordWalker(i,2));
 //            executor.execute(new GrowingWordWalker(i,3));
-            executor.execute(new GrowingWordWalker(i,1));
+//            executor.execute(new GrowingWordWalker(i,1));
         }
         executor.shutdown();
         executor.awaitTermination(30, TimeUnit.HOURS);
     }
 
-    @Test
+//    @Test
     public void wordTrainingTest() throws Exception {
-        ElmanWordDetector network = new ElmanWordDetector(50);
+        ElmanWordDetector network = new ElmanWordDetector(50,NetworkPattern.Elmann);
         int startSize = 4;
         boolean wordDone = false;
         Path csv = Paths.get("src/main/resources/fulldata.csv");

@@ -18,6 +18,7 @@ import org.supercsv.prefs.CsvPreference;
 
 import com.google.common.collect.Lists;
 import com.willautomate.profit.api.Letter;
+import com.willautomate.profit.api.WalkerConfiguration.NetworkPattern;
 import com.willautomate.profit.api.Word;
 import com.willautomate.profit.api.WordFactory;
 import com.willautomate.profit.impl.BasicLetter;
@@ -29,12 +30,12 @@ public class ThePredicatorRunner {
 	public void predict() {
 		Letter<Double> lastLetter = new BasicLetter<Double>(
 				DoubleBinarizer.binarize(50, 2, 5, 18, 30, 43));
-		ElmanWordDetector detector = new ElmanWordDetector(50);
+		ElmanWordDetector detector = new ElmanWordDetector(50,NetworkPattern.Elmann);
 		detector.load(Paths.get("yay1_2_distance"));
 		Letter<Double> next = (Letter<Double>) detector.predict(lastLetter);
 		System.out.println(Arrays.toString(DoubleBinarizer.debinarize(5,
 				next.getRawData())));
-		ElmanWordDetector detector2 = new ElmanWordDetector(50);
+		ElmanWordDetector detector2 = new ElmanWordDetector(50,NetworkPattern.Elmann);
 		detector2.load(Paths.get("yay1_2_distance_2"));
 		Letter<Double> next2 = (Letter<Double>) detector2.predict(lastLetter);
 		System.out.println(Arrays.toString(DoubleBinarizer.debinarize(5,
@@ -50,7 +51,7 @@ public class ThePredicatorRunner {
 			if (net.getName().startsWith("net-final-main0")) {
 		
 		
-			ElmanWordDetector detector = new ElmanWordDetector(50);
+			ElmanWordDetector detector = new ElmanWordDetector(50,NetworkPattern.Elmann);
 			detector.load(Paths.get(net.getAbsolutePath()));
 			Word p = WordFactory.fromCsv(50, csv, 1, 31,
 					ElmanWordDetectorRunner.MAIN_WORD);
@@ -72,7 +73,7 @@ public class ThePredicatorRunner {
 
 		for (File net : dir.listFiles()) {
 			if (net.getName().startsWith("net-final-lucky")) {
-				ElmanWordDetector detector = new ElmanWordDetector(11);
+				ElmanWordDetector detector = new ElmanWordDetector(11,NetworkPattern.Elmann);
 				detector.load(Paths.get(net.getAbsolutePath()));
 				Word p = WordFactory.fromCsv(11, csv, 1, 5,
 						ElmanWordDetectorRunner.LUCKY_WORD);

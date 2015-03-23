@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.willautomate.profit.api.Letter;
+import com.willautomate.profit.api.WalkerConfiguration.NetworkPattern;
 import com.willautomate.profit.api.Word;
 import com.willautomate.profit.api.WordFactory;
 import com.willautomate.profit.impl.DoubleBinarizer;
@@ -83,6 +84,11 @@ public class WordWalker implements Runnable {
         this.maximumError = error;
         return this;
     }
+    
+    public WordWalker withPattern(final NetworkPattern pattern){
+    	this.pattern = pattern;
+    	return this;
+    }
     protected static synchronized Path createMinimalDistanceFile(String pattern) throws IOException{
         Path minimalDistanceF = Paths.get(String.format("minimal-%s",pattern));
         if (!Files.exists(minimalDistanceF))
@@ -90,13 +96,14 @@ public class WordWalker implements Runnable {
         return minimalDistanceF;
     }
     private ElmanWordDetector network;
+    private NetworkPattern pattern = NetworkPattern.Elmann;
     @Override
     public void run() {
 
         String distancePostfix = Thread.currentThread().getName();
         Thread.currentThread().setName(distancePattern);
         try {
-            network = new ElmanWordDetector(debinarizedLetterSize);
+            network = new ElmanWordDetector(debinarizedLetterSize,pattern);
 
             Path profitDistance = Paths.get(String.format("%s-%s", distancePattern,distancePostfix));
             if (save && !Files.exists(profitDistance))
@@ -114,7 +121,7 @@ public class WordWalker implements Runnable {
             while (!wordDone) {
                 Word p = WordFactory.fromCsv(binarizedLetterSize,csv, 3, wordSize, wordDataPattern);
                 network.clean();
-                log.info("Starting training");
+                log.warn("Starting training with word size {}",wordSize);
                 network.train(p);
                 Letter<Double> letterToUser = p.getLetters()[p.getLetters().length - 1];
                 Letter<Double> predicted = (Letter<Double>) network.predict(letterToUser);

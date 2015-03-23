@@ -5,8 +5,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.neo4j.examples.server.Connector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.willautomate.profit.api.DataConfiguration;
+import com.willautomate.profit.api.WalkerConfiguration.NetworkPattern;
 import com.willautomate.profit.impl.Analysis;
 import com.willautomate.profit.impl.DoubleBinarizer;
 
@@ -14,15 +17,18 @@ public class LuckyWalker implements Runnable{
     private static final String name = "Lucky";
     private Path csv;
     WordWalker walker;
-    
-    public LuckyWalker(int i) {
-         csv = Paths.get("src/main/resources/fulldata.csv");
+    private final NetworkPattern pattern;
+    private static final Logger log = LoggerFactory.getLogger(LuckyWalker.class);
+    public LuckyWalker(int i, NetworkPattern pattern) {
+        this.pattern = pattern; 
+    	csv = Paths.get("src/main/resources/fulldata.csv");
          walker = new WordWalker(11, 2, DataConfiguration.LetterPattern.LUCKY.toPattern())
                  .withDataFile(csv)
                  .withMaximumError(0)
-                 .withStartSize(1)
-                 .withMaxSize(122)
+                 .withStartSize(2)
+                 .withMaxSize(30)
                  .saveNetwork(false)
+                 .withPattern(pattern)
                  .withDistancePattern(name+i);
     }
 
@@ -36,7 +42,8 @@ public class LuckyWalker implements Runnable{
             int l2 = predictedLetter[1].intValue();
             
                 Analysis.getInstance(name).analysis(predictedLetter);
-                Connector.createPrediction(0,0,0,0,0,l1,l2,walker.getWordSize(),(int)walker.getDistance());
+                log.warn("Sending prediction {} {} {}",l1,l2,pattern);
+                Connector.createPrediction(0,0,0,0,0,l1,l2,walker.getWordSize(),(int)walker.getDistance(),pattern.toString());
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
