@@ -50,7 +50,7 @@ public class Connector
 
 		//        createNumbers();
 		//        [14.0, 23.0, 24.0, 30.0, 49.0]
-		        createLetter(3,14,37,42,48,1,10);
+		        createLetter(10,24,26,39,40,3,10);
 		//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
 	}
 
@@ -162,7 +162,7 @@ public class Connector
 				.entity( query )
 				.post( ClientResponse.class );
 		String result = response.getEntity( String.class ) ;
-		log.warn( String.format(
+		log.info( String.format(
 				"POST [%s] to [%s], status code [%d], returned data: "
 						+ System.getProperty( "line.separator" ) + "%s",
 						query, txUri, response.getStatus(),
