@@ -75,7 +75,7 @@ public class Connector
 			sb.append(String.format("l1.value=%s and l2.value=%s and " , l1,l2));
 		}
 		sb.append(" has(for.LATEST) ");
-		sb.append(String.format("create (n:Prediction:Letter {wordsize:%s, distance:%s, pattern:%s}) "
+		sb.append(String.format("create (n:Prediction:Letter {wordsize:%s, distance:%s, pattern:'%s'}) "
 				+ "create (n)-[:FOR]->(for) ",wordSize,distance,pattern));
 		if (m1 != 0){
 			sb.append("create (n)-[:MAIN]->(m1) "
@@ -162,7 +162,7 @@ public class Connector
 				.entity( query )
 				.post( ClientResponse.class );
 		String result = response.getEntity( String.class ) ;
-		log.debug( String.format(
+		log.warn( String.format(
 				"POST [%s] to [%s], status code [%d], returned data: "
 						+ System.getProperty( "line.separator" ) + "%s",
 						query, txUri, response.getStatus(),

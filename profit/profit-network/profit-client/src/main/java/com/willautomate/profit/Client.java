@@ -15,9 +15,9 @@ public class Client {
 		System.out.println("Starting");
 		Beemo.register();
 		for (int i = 0; i < 50; i++) {
-			wordSerice.execute(new LuckyWalker(i,NetworkPattern.Elmann));
+			wordSerice.execute(new LuckyWalker(100+i,NetworkPattern.Elmann));
 			wordSerice.execute(new LuckyWalker(i,NetworkPattern.ElmannStep));
-			wordSerice.execute(new GrowingWordWalker(i,2,NetworkPattern.Elmann));
+			wordSerice.execute(new GrowingWordWalker(100+i,2,NetworkPattern.Elmann));
 			wordSerice.execute(new GrowingWordWalker(i,2,NetworkPattern.ElmannStep));
 //            wordSerice.execute(new GrowingWordWalker(i,3));
 //			wordSerice.execute(new GrowingWordWalker(i,1));

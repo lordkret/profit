@@ -93,7 +93,7 @@ public class DoubleBinarizer  {
 	   public static double[] normalize(final double[] data,final double threshold){
 	        final double[] result = new double[data.length];
 	        for (int i=0;i<data.length;i++){
-	            result[i] = (data[i] > threshold)?data[i] : 0;
+	            result[i] = (data[i] > threshold)?1 : 0;
 	        }
 	        return result;
 	    }

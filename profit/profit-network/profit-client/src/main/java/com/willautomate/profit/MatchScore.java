@@ -1,6 +1,5 @@
 package com.willautomate.profit;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,7 +32,6 @@ public class MatchScore implements CalculateScore{
 			((BasicNetwork) method).compute(input, computed);
 			
 			List<Integer> distance = DoubleLetterDistance.calculate(expected,computed);
-//			System.out.println(String.format("distance %s ex %s comp %s", distance,Arrays.toString(expected),Arrays.toString(computed)));
 			result += distance.size();
 			}
 		
