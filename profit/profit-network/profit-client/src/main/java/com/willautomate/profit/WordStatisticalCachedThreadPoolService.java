@@ -9,15 +9,15 @@ import java.util.concurrent.TimeUnit;
 public class WordStatisticalCachedThreadPoolService extends ThreadPoolExecutor {
 
 	private static final int getMaxPoolSize(){
-		int result = Runtime.getRuntime().availableProcessors();
+		int result = 5* Runtime.getRuntime().availableProcessors();
 		String maxPool = System.getProperty("threads");
 		if (maxPool != null ){
-			result = Integer.decode(maxPool);
+			result =  Integer.decode(maxPool);
 		}
 		return result;
 	}
 	public WordStatisticalCachedThreadPoolService(){
-		this(getMaxPoolSize(), getMaxPoolSize(),
+		this(getMaxPoolSize(), Integer.MAX_VALUE,
         60L, TimeUnit.SECONDS,
         new LinkedBlockingQueue<Runnable>());
 	}

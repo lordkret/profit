@@ -50,7 +50,9 @@ public class Connector
 
 		//        createNumbers();
 		//        [14.0, 23.0, 24.0, 30.0, 49.0]
-		        createLetter(10,24,26,39,40,3,10);
+		        createLetter(2,30,32,39,44
+		        		
+		        		,6,10);
 		//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
 	}
 
@@ -205,7 +207,7 @@ public class Connector
 		try {
 			service.awaitTermination(15, TimeUnit.SECONDS);
 			for (String q : queries){
-				Files.write(Paths.get("unsentQueries"), q.getBytes());
+				Files.write(Paths.get("unsentQueries"), q.getBytes(),StandardOpenOption.APPEND);
 			}
 		} catch (InterruptedException | IOException e) {
 			// TODO Auto-generated catch block

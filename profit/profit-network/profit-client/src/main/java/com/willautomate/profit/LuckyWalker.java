@@ -26,7 +26,7 @@ public class LuckyWalker implements Runnable{
                  .withDataFile(csv)
                  .withMaximumError(0)
                  .withStartSize(2)
-                 .withMaxSize(30)
+                 .withMaxSize(122)
                  .saveNetwork(false)
                  .withPattern(pattern)
                  .withDistancePattern(name+i);
