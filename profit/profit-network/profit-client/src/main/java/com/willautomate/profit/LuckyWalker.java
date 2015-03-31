@@ -42,8 +42,8 @@ public class LuckyWalker implements Runnable{
             int l2 = predictedLetter[1].intValue();
             
                 Analysis.getInstance(name).analysis(predictedLetter);
-                log.warn("Sending prediction {} {} {}",l1,l2,pattern);
-                Connector.createPrediction(0,0,0,0,0,l1,l2,walker.getWordSize(),(int)walker.getDistance(),pattern.toString());
+                log.warn("Sending prediction {} {} {}",l1,l2,"preswarm");
+                Connector.createPrediction(0,0,0,0,0,l1,l2,walker.getWordSize(),(int)walker.getDistance(),"preswarm");
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

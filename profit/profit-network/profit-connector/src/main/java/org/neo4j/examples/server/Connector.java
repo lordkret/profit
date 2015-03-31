@@ -50,9 +50,9 @@ public class Connector
 
 		//        createNumbers();
 		//        [14.0, 23.0, 24.0, 30.0, 49.0]
-		        createLetter(2,30,32,39,44
-		        		
-		        		,6,10);
+		createLetter(2,30,32,39,44
+
+				,6,10);
 		//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
 	}
 
@@ -157,7 +157,7 @@ public class Connector
 		final String txUri = SERVER_ROOT_URI + "transaction/commit";
 		WebResource resource = Client.create().resource( txUri );
 
-		
+
 		ClientResponse response = resource
 				.accept( MediaType.APPLICATION_JSON )
 				.type( MediaType.APPLICATION_JSON )
@@ -188,21 +188,18 @@ public class Connector
 		}, 10, 10, TimeUnit.SECONDS);
 	}
 	private static void sendQuery(){
-
 		if (queries.size() > 0){
 			String query = queries.peek();
 			try {
 				sendQuery(query);
-				queries.poll();
+				queries.poll();	
 
 			} catch (Throwable issue){
-				log.info("A bit of issue. Will try later");
-			} finally {
-
+				log.warn("A bit of issue. Will try later with query {}", query);
 			}
 		}
 	}
-	
+
 	public static void disconnect(){
 		try {
 			service.awaitTermination(15, TimeUnit.SECONDS);
@@ -214,5 +211,5 @@ public class Connector
 			log.error("disconnecting issue",e);
 		}
 	}
-	
+
 }

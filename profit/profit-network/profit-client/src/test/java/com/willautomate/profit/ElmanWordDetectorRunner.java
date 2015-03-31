@@ -51,7 +51,7 @@ public class ElmanWordDetectorRunner {
 
 //    @Test
     public void wordTrainingTest() throws Exception {
-        ElmanWordDetector network = new ElmanWordDetector(50,NetworkPattern.Elmann);
+        ElmanWordDetector network = new ElmanWordDetector(50);
         int startSize = 4;
         boolean wordDone = false;
         Path csv = Paths.get("src/main/resources/fulldata.csv");

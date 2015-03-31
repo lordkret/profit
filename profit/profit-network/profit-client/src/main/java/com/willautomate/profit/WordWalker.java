@@ -103,7 +103,7 @@ public class WordWalker implements Runnable {
         String distancePostfix = Thread.currentThread().getName();
         Thread.currentThread().setName(distancePattern);
         try {
-            network = new ElmanWordDetector(debinarizedLetterSize,pattern);
+            network = new ElmanWordDetector(debinarizedLetterSize);
 
             Path profitDistance = Paths.get(String.format("%s-%s", distancePattern,distancePostfix));
             if (save && !Files.exists(profitDistance))

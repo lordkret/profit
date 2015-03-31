@@ -48,8 +48,8 @@ public class GrowingWordWalker implements Runnable{
 		int m5 = predictedLetter[4].intValue();
 		
             Analysis.getInstance(name).analysis(predictedLetter);
-            log.warn("Senging prediction {} {} {} {} {} {}",m1,m2,m3,m4,m5,pattern);
-            Connector.createPrediction(m1,m2,m3,m4,m5,0,0,walker.getWordSize(),(int)walker.getDistance(),pattern.toString());
+            log.warn("Senging prediction {} {} {} {} {} {}",m1,m2,m3,m4,m5,"preswarm");
+            Connector.createPrediction(m1,m2,m3,m4,m5,0,0,walker.getWordSize(),(int)walker.getDistance(),"preswarm");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
