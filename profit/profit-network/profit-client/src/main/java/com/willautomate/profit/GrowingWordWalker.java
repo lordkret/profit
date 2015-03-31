@@ -28,8 +28,8 @@ public class GrowingWordWalker implements Runnable{
 		 walker = new WordWalker(50, 5, DataConfiguration.LetterPattern.MAIN.toPattern())
 				 .withDataFile(csv)
 				 .withMaximumError(error)
-				 .withStartSize(20)
-				 .withMaxSize(122)
+				 .withStartSize(15)
+				 .withMaxSize(124)
 				 .saveNetwork(false)
 				 .withPattern(pattern)
 				 .withDistancePattern(name+i);
@@ -48,7 +48,7 @@ public class GrowingWordWalker implements Runnable{
 		int m5 = predictedLetter[4].intValue();
 		
             Analysis.getInstance(name).analysis(predictedLetter);
-            log.warn("Senging prediction {} {} {} {} {} {}",m1,m2,m3,m4,m5,"preswarm");
+            log.warn("Senging prediction {} {} {} {} {} {}",m1,m2,m3,m4,m5,"jordan");
             Connector.createPrediction(m1,m2,m3,m4,m5,0,0,walker.getWordSize(),(int)walker.getDistance(),"preswarm");
         } catch (IOException e) {
             // TODO Auto-generated catch block

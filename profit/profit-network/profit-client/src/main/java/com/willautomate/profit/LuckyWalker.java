@@ -26,7 +26,7 @@ public class LuckyWalker implements Runnable{
                  .withDataFile(csv)
                  .withMaximumError(0)
                  .withStartSize(2)
-                 .withMaxSize(122)
+                 .withMaxSize(124)
                  .saveNetwork(false)
                  .withPattern(pattern)
                  .withDistancePattern(name+i);
@@ -42,7 +42,7 @@ public class LuckyWalker implements Runnable{
             int l2 = predictedLetter[1].intValue();
             
                 Analysis.getInstance(name).analysis(predictedLetter);
-                log.warn("Sending prediction {} {} {}",l1,l2,"preswarm");
+                log.warn("Sending prediction {} {} {}",l1,l2,"jordan");
                 Connector.createPrediction(0,0,0,0,0,l1,l2,walker.getWordSize(),(int)walker.getDistance(),"preswarm");
             } catch (IOException e) {
                 // TODO Auto-generated catch block

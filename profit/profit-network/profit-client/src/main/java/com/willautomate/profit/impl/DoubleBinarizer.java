@@ -79,6 +79,9 @@ public class DoubleBinarizer  {
 		return result.toArray(new Double[bitsSize]);
 	}
 
+	public static String debinarizeAsString(int bitsSize, Double...data){
+		return Arrays.toString(debinarize(bitsSize, data));
+	}
 	public static Double[] binarize(int bitsSize, int... data) {
 		Double[] result = new Double[bitsSize];
 		Arrays.fill(result, 0D);

@@ -1,19 +1,18 @@
 package com.willautomate.profit;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.encog.engine.network.activation.ActivationLOG;
+import org.encog.engine.network.activation.ActivationStep;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.neural.pattern.ElmanPattern;
+import org.encog.neural.pattern.JordanPattern;
 import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.slf4j.Logger;
@@ -41,30 +40,36 @@ public class ElmanWordDetector implements WordsDetector{
 	public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
 	    NeuralNetworkPattern pattern;
 	    
-	        pattern = new ElmanPattern();
+	        pattern = new JordanPattern();
 	    
 	    
         pattern.setInputNeurons(letterSize);
-        pattern.addHiddenLayer(hiddenLayerSize);
+        pattern.addHiddenLayer(hiddenLayerSize+30);
         pattern.setOutputNeurons(letterSize);
-        pattern.setActivationFunction(new ActivationLOG());
+        pattern.setActivationFunction(new ActivationStep());
         return (BasicNetwork)pattern.generate();
     }
-    private boolean doesRememberEverything(MLDataSet data){
-    	boolean result = true;
+    private boolean doesRememberEverything(MLDataSet data,int... checks){
+    	boolean result = false;
     	final Iterator<MLDataPair> pairs = data.iterator();
     	MLDataPair pair = null;
     	
     	Letter<Double> ideal = null;
     	Letter<Double> computed = null;
-    	
+    	int toCheck = 1;
+    	if (checks.length > 0)
+    		toCheck = Math.max(checks[0],toCheck);
+    	while (! result && (toCheck > 0) ){
     	while (((pair = pairs.next())!= null) ){
     	    Letter<Double> toCompute = new BasicLetter<Double>(ArrayUtils.toObject(pair.getInput().getData()));
     		computed =  (Letter<Double>) predict(toCompute);
     		ideal = new BasicLetter<Double>(ArrayUtils.toObject(pair.getIdeal().getData()));
+    		log.info("Comparing {} to ideal {}",DoubleBinarizer.debinarizeAsString(debinarizedLetterSize,computed.getRawData()),DoubleBinarizer.debinarizeAsString(debinarizedLetterSize, ideal.getRawData()));
     		double distance = DoubleLetterDistance.calculate(computed, ideal, debinarizedLetterSize);
     		result = result && (distance == 0);
-    		log.debug("distance {} effect of {}",distance,Arrays.toString(DoubleBinarizer.debinarize(debinarizedLetterSize,toCompute.getRawData())));
+    		log.info("distance {} effect of {}",distance,DoubleBinarizer.debinarizeAsString(debinarizedLetterSize,toCompute.getRawData()));
+    	}
+    	toCheck--;
     	}
     	return result;
     }
@@ -78,12 +83,14 @@ public class ElmanWordDetector implements WordsDetector{
 		final MLTrain trainMain = new ResilientPropagation((ContainsFlat)network, set); 
 
 //		trainMain.addStrategy(new Greedy());
-		
-		while (!doesRememberEverything(set)) {
-//			EncogUtility.trainToError(network, set, 0.00007);
-			trainMain.iteration();
+		double error = 1000;
+		while (!doesRememberEverything(set,50) && error > 0) {
+//			EncogUtility.trainToError(network, set, error);
+			trainMain.iteration(1000);
 			log.debug("error {}",trainMain.getError());
+			error--;
 		}
+		log.warn("tried {} times",error);
 		trainMain.finishTraining();
 	}
 

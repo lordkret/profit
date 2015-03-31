@@ -1,6 +1,5 @@
 package com.willautomate.profit;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -16,19 +15,20 @@ public class Client {
 		Beemo.register();
 		for (int i = 0; i < 1000; i++) {
 			wordSerice.execute(new LuckyWalker(100+i,NetworkPattern.Elmann));
-			wordSerice.execute(new LuckyWalker(i,NetworkPattern.ElmannStep));
-			wordSerice.execute(new GrowingWordWalker(100+i,1,NetworkPattern.Elmann));
+//			wordSerice.execute(new LuckyWalker(i,NetworkPattern.ElmannStep));
+			wordSerice.execute(new GrowingWordWalker(100+i,2,NetworkPattern.Elmann));
 			wordSerice.execute(new GrowingWordWalker(i,1,NetworkPattern.ElmannStep));
+//			wordSerice.execute(new GrowingWordWalker(i,3,NetworkPattern.ElmannStep));
 //            wordSerice.execute(new GrowingWordWalker(i,3));
 //			wordSerice.execute(new GrowingWordWalker(i,1));
         }
 		wordSerice.awaitTermination(24, TimeUnit.HOURS);
 		
 		System.out.println("Ready to stop");
-		
 		Beemo.unregister();
 		
 		Beemo.shutdownLock.lock();
+
 		
 		letterService.shutdownNow();
 		

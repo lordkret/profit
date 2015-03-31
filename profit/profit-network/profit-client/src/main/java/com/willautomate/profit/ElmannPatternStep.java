@@ -80,7 +80,7 @@ public class ElmannPatternStep implements NeuralNetworkPattern {
                 this.hiddenNeurons));
         network.addLayer(new BasicLayer(new ActivationStep(), false, this.outputNeurons));
         
-        input.setContextFedBy(hidden);
+        input.setContextFedBy(input);
         network.getStructure().finalizeStructure();
         network.reset();
         return network;
