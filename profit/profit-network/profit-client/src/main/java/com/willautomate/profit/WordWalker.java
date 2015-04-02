@@ -121,7 +121,7 @@ public class WordWalker implements Runnable {
             while (!wordDone) {
                 Word p = WordFactory.fromCsv(binarizedLetterSize,csv, 3, wordSize, wordDataPattern);
                 network.clean();
-                log.info("Starting training with word size {}",wordSize);
+                log.warn("Starting training with word size {}",wordSize);
                 network.train(p);
                 Letter<Double> letterToUser = p.getLetters()[p.getLetters().length - 1];
                 Letter<Double> predicted = (Letter<Double>) network.predict(letterToUser);
@@ -142,7 +142,7 @@ public class WordWalker implements Runnable {
                 } else {
                     wordSize = startSize;
                 }
-                log.info("Current word size " + wordSize + " \n toPredict: " + Arrays.toString(DoubleBinarizer.debinarize(debinarizedLetterSize, toPredict.getRawData())) + "\n predicted: "
+                log.warn("Current word size " + wordSize + " \n toPredict: " + Arrays.toString(DoubleBinarizer.debinarize(debinarizedLetterSize, toPredict.getRawData())) + "\n predicted: "
                         + Arrays.toString(predictedData) + " and distance: " + distance);
                 log.debug("Letter used {}", letterToUser);
             }
