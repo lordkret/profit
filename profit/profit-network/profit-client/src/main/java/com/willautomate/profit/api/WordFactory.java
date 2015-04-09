@@ -60,7 +60,7 @@ public class WordFactory {
 		List<String> headersToUse = Arrays.asList(columnsToRead);
 		int readRows = 0;
 		while ((readRows < rowsToRead)&&(oneRow = csvReader.read(columnsToRead))!= null){
-			if (csvReader.getRowNumber() >= startRow){
+			if (csvReader.getRowNumber() > startRow){
 			letters.add(new BasicLetter(DoubleBinarizer.binarize(binarizedWordSize, oneRow.values())));
 			readRows++;
 			}

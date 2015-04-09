@@ -119,7 +119,7 @@ public class WordWalker implements Runnable {
             Letter<Double> toPredict = WordFactory.fromCsv(binarizedLetterSize,csv, 1, 1, wordDataPattern).getLetters()[0];
             
             while (!wordDone) {
-                Word p = WordFactory.fromCsv(binarizedLetterSize,csv, 3, wordSize, wordDataPattern);
+                Word p = WordFactory.fromCsv(binarizedLetterSize,csv, 2, wordSize, wordDataPattern);
                 network.clean();
                 log.warn("Starting training with word size {}",wordSize);
                 network.train(p);

@@ -39,7 +39,7 @@ public class WordFactoryTest {
 	@Test
 	public void fromCsvShite() throws IOException{
 		String[] ls = {"L1","L2"};
-		Word s1 = WordFactory.fromCsv(11, Paths.get("src/test/resources/data.csv"), 3, 5, ls);
+		Word s1 = WordFactory.fromCsv(11, Paths.get("src/test/resources/data.csv"), 2, 5, ls);
 		Word s2 = WordFactory.fromCsv(11, Paths.get("src/test/resources/data.csv"), 1, 4, ls);
 		System.out.println(s1);
 		System.out.println(s2);
