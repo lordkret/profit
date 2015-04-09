@@ -14,39 +14,56 @@ import com.willautomate.profit.impl.Analysis;
 import com.willautomate.profit.impl.DoubleBinarizer;
 
 public class LuckyWalker implements Runnable{
-    private static final String name = "Lucky";
-    private Path csv;
-    WordWalker walker;
-    private final NetworkPattern pattern;
-    private static final Logger log = LoggerFactory.getLogger(LuckyWalker.class);
-    public LuckyWalker(int i, NetworkPattern pattern) {
-        this.pattern = pattern; 
-    	csv = Paths.get("src/main/resources/fulldata.csv");
-         walker = new WordWalker(11, 2, DataConfiguration.LetterPattern.LUCKY.toPattern())
-                 .withDataFile(csv)
-                 .withMaximumError(0)
-                 .withStartSize(2)
-                 .withMaxSize(124)
-                 .saveNetwork(false)
-                 .withPattern(pattern)
-                 .withDistancePattern(name+i);
-    }
+	private static final String name = "Lucky";
+	private Path csv;
+	WordWalker walker;
+	private final NetworkPattern pattern;
+	private static final Logger log = LoggerFactory.getLogger(LuckyWalker.class);
+	private final int startSize ;
+	private final int maxSize ;
+	private final int distancePatternQuantifier;
+	public LuckyWalker(int i, NetworkPattern pattern,int startSize, int maxSize){
+		this.pattern = pattern;
+		this.startSize = startSize;
+		this.maxSize = maxSize;
+		this.distancePatternQuantifier = i;
+		configureWalker();
+	}
+	private final void configureWalker(){
+		csv = Paths.get("src/main/resources/fulldata.csv");
+		walker = new WordWalker(11, 2, DataConfiguration.LetterPattern.LUCKY.toPattern())
+		.withDataFile(csv)
+		.withMaximumError(0)
+		.withStartSize(startSize)
+		.withMaxSize(maxSize)
+		.saveNetwork(false)
+		.withPattern(pattern)
+		.withDistancePattern(name+distancePatternQuantifier);
 
-    @Override
-    public void run() {
-        walker.run();
-        try{
-            Double[] predictedLetter = null;
-                predictedLetter = DoubleBinarizer.debinarize(2, walker.uptrainAndPredict());
-            int l1 = predictedLetter[0].intValue();
-            int l2 = predictedLetter[1].intValue();
-            
-                Analysis.getInstance(name).analysis(predictedLetter);
-                log.warn("Sending prediction {} {} {}",l1,l2,"jordan");
-                Connector.createPrediction(0,0,0,0,0,l1,l2,walker.getWordSize(),(int)walker.getDistance(),"jordan");
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-    }
+	}
+	public LuckyWalker(int i, NetworkPattern pattern) {
+		this.startSize = 5;
+		this.maxSize = 125;
+		this.pattern = pattern; 
+		this.distancePatternQuantifier = i;
+		configureWalker();
+	}
+
+	@Override
+	public void run() {
+		walker.run();
+		try{
+			Double[] predictedLetter = null;
+			predictedLetter = DoubleBinarizer.debinarize(2, walker.uptrainAndPredict());
+			int l1 = predictedLetter[0].intValue();
+			int l2 = predictedLetter[1].intValue();
+
+			Analysis.getInstance(name).analysis(predictedLetter);
+			log.warn("Sending prediction {} {} {}",l1,l2,"jordan");
+			Connector.createPrediction(0,0,0,0,0,l1,l2,walker.getWordSize(),(int)walker.getDistance(),"jordan");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

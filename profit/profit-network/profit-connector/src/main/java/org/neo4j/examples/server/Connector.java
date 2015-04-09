@@ -19,11 +19,11 @@
 package org.neo4j.examples.server;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -43,14 +43,14 @@ public class Connector
 {
 	private static final String SERVER_ROOT_URI = "http://profit.willautomate.com:7474/db/data/";
 
-	public static void main( String[] args ) throws URISyntaxException
+	public static void main( String[] args ) throws Exception
 	{
 		checkDatabaseIsRunning();
-
+//		sendUnsentQueries();
 
 		//        createNumbers();
 		//        [14.0, 23.0, 24.0, 30.0, 49.0]
-//		createLetter(8,20,24,28,49,8,9);
+		createLetter(18,25,39,44,50,5,8);
 		//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
 	}
 
@@ -103,7 +103,7 @@ public class Connector
 				+ "(l2:Number) "
 				+ "where m1.value=%s and m2.value=%s and m3.value=%s and m4.value=%s and m5.value=%s"
 				+ " and l1.value=%s and l2.value=%s"
-				+ " create (n:Letter) "
+				+ " create (n:Letter {LATEST:true}) "
 				+ " create (n)-[:MAIN]->(m1) "
 				+ "create (n)-[:MAIN]->(m2) "
 				+ "create (n)-[:MAIN]->(m3) "
@@ -145,7 +145,7 @@ public class Connector
 		try {
 			return sendQuery(query);
 		} catch (Throwable issue){
-			log.info("Can't send now due to {}. Will retry later",issue);
+			log.warn("Can't send now due to {}. Will retry later",issue);
 			queries.add(query);
 			return "";
 		}
@@ -191,9 +191,10 @@ public class Connector
 			try {
 				sendQuery(query);
 				queries.poll();	
+				log.warn("Query {} sent",query);
 
 			} catch (Throwable issue){
-				log.warn("A bit of issue. Will try later with query {}", query);
+				log.warn("A bit of issue. Queue size {}. Will try later with query {}", queries.size(),query);
 			}
 		}
 	}
@@ -202,12 +203,18 @@ public class Connector
 		try {
 			service.awaitTermination(15, TimeUnit.SECONDS);
 			for (String q : queries){
-				Files.write(Paths.get("unsentQueries"), q.getBytes(),StandardOpenOption.APPEND);
+				Files.write(Paths.get("unsentQueries"), String.format("%s\n", q).getBytes(),StandardOpenOption.APPEND);
 			}
 		} catch (InterruptedException | IOException e) {
 			// TODO Auto-generated catch block
 			log.error("disconnecting issue",e);
 		}
 	}
-
+	public static void sendUnsentQueries() throws IOException{
+		List<String> qs = Files.readAllLines(Paths.get("/home/erafkos/profit/profit/profit-network/profit-client/unQ"), Charset.defaultCharset());
+		for (String q : qs){
+			sendQuery(q);
+		}
+		disconnect();
+	}
 }

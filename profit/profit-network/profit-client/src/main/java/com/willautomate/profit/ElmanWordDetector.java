@@ -45,7 +45,7 @@ public class ElmanWordDetector implements WordsDetector{
 
 
 		pattern.setInputNeurons(letterSize);
-		pattern.addHiddenLayer(hiddenLayerSize+300);
+		pattern.addHiddenLayer(hiddenLayerSize*2+330);
 		pattern.setOutputNeurons(letterSize);
 		pattern.setActivationFunction(new ActivationStep());
 		return (BasicNetwork)pattern.generate();
@@ -86,13 +86,13 @@ public class ElmanWordDetector implements WordsDetector{
 
 		//		trainMain.addStrategy(new Greedy());
 		double error = 10;
-		while (!doesRememberEverything(set,3) && error > 0) {
+		while (!doesRememberEverything(set,5) && error > 0) {
 			//			EncogUtility.trainToError(network, set, error);
-			trainMain.iteration(400);
+			trainMain.iteration(450);
 			log.debug("error {}",trainMain.getError());
 			error--;
 		}
-		log.warn("tried {} times",100-error);
+		log.info("tried {} times",10-error);
 		trainMain.finishTraining();
 	}
 

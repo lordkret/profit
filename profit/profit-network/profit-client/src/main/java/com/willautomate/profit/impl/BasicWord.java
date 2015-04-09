@@ -32,7 +32,7 @@ public class BasicWord implements Word {
 			@Override
 			public String apply(Letter input) {
 				Letter<Double> val = input;
-				return Arrays.deepToString(DoubleBinarizer.debinarize(Math.min(5, val.size()), val.getRawData()));
+				return Arrays.deepToString(DoubleBinarizer.debinarize(Math.min(2, val.size()), val.getRawData()));
 			}
 		})));
 	}

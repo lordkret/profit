@@ -1,5 +1,7 @@
 package com.willautomate.profit.api;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -32,6 +34,17 @@ public class WordFactoryTest {
 	public void testToData() {
 		Letter<Double> l = new BasicLetter<Double>(ArrayUtils.toArray(1D,2D));
 		System.out.println(WordFactory.toData(l));
+	}
+	
+	@Test
+	public void fromCsvShite() throws IOException{
+		String[] ls = {"L1","L2"};
+		Word s1 = WordFactory.fromCsv(11, Paths.get("src/test/resources/data.csv"), 3, 5, ls);
+		Word s2 = WordFactory.fromCsv(11, Paths.get("src/test/resources/data.csv"), 1, 4, ls);
+		System.out.println(s1);
+		System.out.println(s2);
+		
+		
 	}
 
 }
