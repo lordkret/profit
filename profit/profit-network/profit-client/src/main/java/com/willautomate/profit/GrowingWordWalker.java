@@ -29,7 +29,7 @@ public class GrowingWordWalker implements Runnable{
 				 .withDataFile(csv)
 				 .withMaximumError(error)
 				 .withStartSize(15)
-				 .withMaxSize(125)
+				 .withMaxSize(126)
 				 .saveNetwork(false)
 				 .withPattern(pattern)
 				 .withDistancePattern(name+i);

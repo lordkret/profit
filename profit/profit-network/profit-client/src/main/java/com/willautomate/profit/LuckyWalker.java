@@ -43,7 +43,7 @@ public class LuckyWalker implements Runnable{
 	}
 	public LuckyWalker(int i, NetworkPattern pattern) {
 		this.startSize = 5;
-		this.maxSize = 125;
+		this.maxSize = 126;
 		this.pattern = pattern; 
 		this.distancePatternQuantifier = i;
 		configureWalker();
