@@ -28,9 +28,9 @@ public class GrowingWordWalker implements Runnable{
 		 walker = new WordWalker(50, 5, DataConfiguration.LetterPattern.MAIN.toPattern())
 				 .withDataFile(csv)
 				 .withMaximumError(error)
-				 .withStartSize(15)
-				 .withMaxSize(126)
-				 .saveNetwork(false)
+				 .withStartSize(30)
+				 .withMaxSize(43)
+				 .saveNetwork(true)
 				 .withPattern(pattern)
 				 .withDistancePattern(name+i);
 	}

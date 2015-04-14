@@ -1,6 +1,7 @@
 package com.willautomate.profit;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,7 +38,7 @@ public class ElmanWordDetector implements WordsDetector{
 	}
 	private final int debinarizedLetterSize;
 	private static AtomicBoolean flag = new AtomicBoolean(false);
-
+	private boolean notRandom = true;
 	public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
 		NeuralNetworkPattern pattern;
 
@@ -48,7 +49,13 @@ public class ElmanWordDetector implements WordsDetector{
 		pattern.addHiddenLayer(hiddenLayerSize*2+330);
 		pattern.setOutputNeurons(letterSize);
 		pattern.setActivationFunction(new ActivationStep());
-		return (BasicNetwork)pattern.generate();
+		BasicNetwork result = (BasicNetwork) pattern.generate();
+		if (notRandom){
+			double[] newWeights = new double[result.getStructure().getFlat().getWeights().length];
+			Arrays.fill(newWeights, 0.5);
+			result.getStructure().getFlat().setWeights(newWeights);
+		}
+		return result;
 	}
 	private boolean doesRememberEverything(MLDataSet data,int... checks){
 		boolean result = false;
