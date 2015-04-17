@@ -4,7 +4,7 @@ import java.nio.file.Path;
 
 public interface WordsDetector {
 
-	void train(Word word);
+	boolean train(Word word);
 	Letter<?> predict(Letter<?> lastLetter);
 	
 	void save(Path location);

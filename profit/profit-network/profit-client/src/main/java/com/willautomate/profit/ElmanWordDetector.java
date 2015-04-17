@@ -1,7 +1,6 @@
 package com.willautomate.profit;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -10,10 +9,11 @@ import org.encog.engine.network.activation.ActivationStep;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.strategy.StopTrainingStrategy;
+import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.neural.pattern.JordanPattern;
 import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.encog.persist.EncogDirectoryPersistence;
@@ -39,6 +39,7 @@ public class ElmanWordDetector implements WordsDetector{
 	private final int debinarizedLetterSize;
 	private static AtomicBoolean flag = new AtomicBoolean(false);
 	private boolean notRandom = true;
+	private double weightValue = Double.MAX_VALUE;
 	public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
 		NeuralNetworkPattern pattern;
 
@@ -51,9 +52,9 @@ public class ElmanWordDetector implements WordsDetector{
 		pattern.setActivationFunction(new ActivationStep());
 		BasicNetwork result = (BasicNetwork) pattern.generate();
 		if (notRandom){
-			double[] newWeights = new double[result.getStructure().getFlat().getWeights().length];
-			Arrays.fill(newWeights, 0.5);
-			result.getStructure().getFlat().setWeights(newWeights);
+			int size = result.getStructure().getFlat().getWeights().length;
+			result.getStructure().getFlat().setWeights(WeightsDispatcher.weights(size));
+			weightValue = result.getStructure().getFlat().getWeights()[0];
 		}
 		return result;
 	}
@@ -82,7 +83,7 @@ public class ElmanWordDetector implements WordsDetector{
 		}
 		return result;
 	}
-	public void train(Word word) {
+	public boolean train(Word word) {
 		if (network == null){
 			network = createNetwork(word.getLetters()[0].size(),word.size());
 		}
@@ -90,17 +91,30 @@ public class ElmanWordDetector implements WordsDetector{
 		MLDataSet set = WordFactory.toDataSet(word);
 
 		final MLTrain trainMain = new ResilientPropagation((ContainsFlat)network, set); 
+		
 
-		//		trainMain.addStrategy(new Greedy());
-		double error = 10;
-		while (!doesRememberEverything(set,5) && error > 0) {
+				
+		double error = 100;
+		while (!doesRememberEverything(set,10) && error > 0) {
 			//			EncogUtility.trainToError(network, set, error);
-			trainMain.iteration(450);
+			StopTrainingStrategy stop = new StopTrainingStrategy(0.001, 100);
+			trainMain.addStrategy(stop);
+			while (! stop.shouldStop()){
+				trainMain.iteration(1000);
+			}
 			log.debug("error {}",trainMain.getError());
 			error--;
 		}
-		log.info("tried {} times",10-error);
 		trainMain.finishTraining();
+		log.info("tried {} times",100-error);
+		if (error == 0){
+			log.error("I didnt learn");
+			return false;
+		} else {
+			return true;
+		}
+		
+		
 	}
 
 	public Letter<?> predict(Letter<?> lastLetter) {
@@ -123,5 +137,8 @@ public class ElmanWordDetector implements WordsDetector{
 	@Override
 	public String toString(){
 		return String.format("Network %s\n weights %s", network.toString(),network.dumpWeights());
+	}
+	public double getWeightValue() {
+		return weightValue;
 	}
 }

@@ -37,6 +37,8 @@ public class WordWalker implements Runnable {
     public int getWordSize(){
         return wordSize;
     }
+    
+    private boolean learned = false;
     private boolean writeToFileOnMinimal = false;
     private Path csv =  Paths.get("src/main/resources/fulldata.csv");
     private boolean save = true;
@@ -122,7 +124,7 @@ public class WordWalker implements Runnable {
                 Word p = WordFactory.fromCsv(binarizedLetterSize,csv, 2, wordSize, wordDataPattern);
                 network.clean();
                 log.warn("Starting training with word size {}",wordSize);
-                network.train(p);
+                learned = network.train(p);
                 Letter<Double> letterToUser = p.getLetters()[p.getLetters().length - 1];
                 Letter<Double> predicted = (Letter<Double>) network.predict(letterToUser);
                 distance = DoubleLetterDistance.calculate(toPredict, predicted, debinarizedLetterSize);
@@ -165,4 +167,12 @@ public class WordWalker implements Runnable {
         return network.predict(toUse);
         
     }
+
+	public double getWeightValue() {
+		return network.getWeightValue();
+	}
+
+	public boolean isSmart() {
+		return learned;
+	}
 }

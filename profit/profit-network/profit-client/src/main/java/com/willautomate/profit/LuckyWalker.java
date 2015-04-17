@@ -57,10 +57,10 @@ public class LuckyWalker implements Runnable{
 			predictedLetter = DoubleBinarizer.debinarize(2, walker.uptrainAndPredict());
 			int l1 = predictedLetter[0].intValue();
 			int l2 = predictedLetter[1].intValue();
-
+			
 			Analysis.getInstance(name).analysis(predictedLetter);
-			log.warn("Sending prediction {} {} {}",l1,l2,"jordan");
-			Connector.createPrediction(0,0,0,0,0,l1,l2,walker.getWordSize(),(int)walker.getDistance(),"jordan");
+			log.warn("Sending prediction {} {} {} {} {}",l1,l2,"jordan",walker.getWeightValue(),walker.isSmart());
+			Connector.createPrediction(0,0,0,0,0,l1,l2,walker.getWordSize(),(int)walker.getDistance(),"jordan",walker.getWeightValue(),walker.isSmart());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

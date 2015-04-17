@@ -50,11 +50,11 @@ public class Connector
 
 		//        createNumbers();
 		//        [14.0, 23.0, 24.0, 30.0, 49.0]
-//		createLetter(22,23,25,30,43,5,9);
+//		createLetter(24,32,34,35,49,1,2);
 		//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
 	}
 
-	public static void createPrediction(int m1,int m2,int m3, int m4, int m5, int l1, int l2, int wordSize, int distance, String pattern){
+	public static void createPrediction(int m1,int m2,int m3, int m4, int m5, int l1, int l2, int wordSize, int distance, String pattern, double weightValue,boolean isSmart){
 		StringBuilder sb = new StringBuilder("match (for:Letter) ");
 		if (m1 != 0){
 			sb.append(",(m1:Number),"
@@ -75,8 +75,8 @@ public class Connector
 			sb.append(String.format("l1.value=%s and l2.value=%s and " , l1,l2));
 		}
 		sb.append(" has(for.LATEST) ");
-		sb.append(String.format("create (n:Prediction:Letter {wordsize:%s, distance:%s, pattern:'%s'}) "
-				+ "create (n)-[:FOR]->(for) ",wordSize,distance,pattern));
+		sb.append(String.format("create (n:Prediction:Letter {wordsize:%s, distance:%s, pattern:'%s', weight:%s, smart:%s}) "
+				+ "create (n)-[:FOR]->(for) ",wordSize,distance,pattern,weightValue,isSmart));
 		if (m1 != 0){
 			sb.append("create (n)-[:MAIN]->(m1) "
 					+ "create (n)-[:MAIN]->(m2) "
