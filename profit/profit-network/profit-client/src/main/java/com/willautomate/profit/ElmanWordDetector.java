@@ -94,13 +94,13 @@ public class ElmanWordDetector implements WordsDetector{
 		
 
 				
-		double error = 100;
-		while (!doesRememberEverything(set,10) && error > 0) {
+		double error = 50;
+		while (!doesRememberEverything(set,5) && error > 0) {
 			//			EncogUtility.trainToError(network, set, error);
 			StopTrainingStrategy stop = new StopTrainingStrategy(0.001, 100);
 			trainMain.addStrategy(stop);
 			while (! stop.shouldStop()){
-				trainMain.iteration(1000);
+				trainMain.iteration(100);
 			}
 			log.debug("error {}",trainMain.getError());
 			error--;
