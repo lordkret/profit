@@ -38,7 +38,7 @@ public class ElmanWordDetector implements WordsDetector{
 	}
 	private final int debinarizedLetterSize;
 	private static AtomicBoolean flag = new AtomicBoolean(false);
-	private boolean notRandom = true;
+	private boolean notRandom = false;
 	private double weightValue = Double.MAX_VALUE;
 	public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
 		NeuralNetworkPattern pattern;
