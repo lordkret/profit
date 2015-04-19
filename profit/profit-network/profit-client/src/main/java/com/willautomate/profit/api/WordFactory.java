@@ -1,18 +1,5 @@
 package com.willautomate.profit.api;
 
-import com.google.common.collect.Lists;
-import com.willautomate.profit.impl.BasicLetter;
-import com.willautomate.profit.impl.BasicWord;
-import com.willautomate.profit.impl.DoubleBinarizer;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.encog.ml.data.MLData;
-import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLData;
-import org.encog.ml.data.basic.BasicMLDataSet;
-import org.supercsv.io.CsvMapReader;
-import org.supercsv.prefs.CsvPreference;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -23,9 +10,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.supercsv.io.CsvMapReader;
+import org.supercsv.prefs.CsvPreference;
+
+import com.google.common.collect.Lists;
+import com.willautomate.profit.impl.BasicLetter;
+import com.willautomate.profit.impl.BasicWord;
+import com.willautomate.profit.impl.DoubleBinarizer;
+
 public class WordFactory {
 
-	public static MLDataSet toDataSet(Word word){
+	public static NeuralDataSet toDataSet(Word word){
 		Letter<Double>[] letters = word.getLetters();
 		double[][] input = new double[letters.length-1][letters[0].getRawData().length];
 		double[][] ideal = new double[letters.length-1][letters[0].getRawData().length];		
@@ -34,19 +34,19 @@ public class WordFactory {
 			input[i-1] = ArrayUtils.toPrimitive(letters[i-1].getRawData());
 			ideal[i-1] = ArrayUtils.toPrimitive(letters[i].getRawData());
 		}
-		MLDataSet data = new BasicMLDataSet(input, ideal);
+		NeuralDataSet data = new BasicNeuralDataSet(input, ideal);
 		return data;
 		
 	}
 
 	
-	public static MLData toData(Letter<?> lastLetter) {
+	public static NeuralData toData(Letter<?> lastLetter) {
 		Object[] mlData =  lastLetter.getRawData();
 		double[] d = ArrayUtils.toPrimitive(Arrays.copyOf(mlData,mlData.length,Double[].class));
-		return new BasicMLData(d);
+		return new BasicNeuralData(d);
 	}
 
-	public static Letter<Double> toLetter(MLData compute) {
+	public static Letter<Double> toLetter(NeuralData compute) {
 		return new BasicLetter<Double>(ArrayUtils.toObject(compute.getData()));
 	}
 

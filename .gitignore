@@ -18,6 +18,7 @@ project/plugins/project/
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
-profit/simple_building_blocks/minimal-*
-profit/simple_building_blocks/lucky*-pool-*
-profit/simple_building_blocks/main*-pool-*
+*/minimal-*
+*/lucky*-pool-*
+*/main*-pool-*
+*/*Ana

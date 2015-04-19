@@ -5,18 +5,18 @@ import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.encog.engine.network.activation.ActivationStep;
-import org.encog.ml.data.MLDataPair;
-import org.encog.ml.data.MLDataSet;
-import org.encog.ml.train.MLTrain;
-import org.encog.ml.train.strategy.StopTrainingStrategy;
-import org.encog.ml.train.strategy.Strategy;
+import org.encog.Encog;
+import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
+import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.ContainsFlat;
+import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.networks.training.strategy.StopTrainingStrategy;
+import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.neural.pattern.JordanPattern;
 import org.encog.neural.pattern.NeuralNetworkPattern;
-import org.encog.persist.EncogDirectoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,30 +38,30 @@ public class ElmanWordDetector implements WordsDetector{
 	}
 	private final int debinarizedLetterSize;
 	private static AtomicBoolean flag = new AtomicBoolean(false);
-	private boolean notRandom = true;
+	private boolean notRandom = false;
 	private double weightValue = Double.MAX_VALUE;
 	public BasicNetwork createNetwork(int letterSize, int hiddenLayerSize) {
 		NeuralNetworkPattern pattern;
 
-		pattern = new JordanPattern();
+		pattern = new FeedForwardPattern();
 
 
 		pattern.setInputNeurons(letterSize);
-		pattern.addHiddenLayer(hiddenLayerSize*2+330);
+		pattern.addHiddenLayer(hiddenLayerSize*2+880);
 		pattern.setOutputNeurons(letterSize);
-		pattern.setActivationFunction(new ActivationStep());
+		pattern.setActivationFunction(new ActivationSigmoid());
 		BasicNetwork result = (BasicNetwork) pattern.generate();
 		if (notRandom){
 			int size = result.getStructure().getFlat().getWeights().length;
-			result.getStructure().getFlat().setWeights(WeightsDispatcher.weights(size));
+			result.getStructure().getFlat().decodeNetwork(WeightsDispatcher.weights(size));
 			weightValue = result.getStructure().getFlat().getWeights()[0];
 		}
 		return result;
 	}
-	private boolean doesRememberEverything(MLDataSet data,int... checks){
+	private boolean doesRememberEverything(NeuralDataSet data,int... checks){
 		boolean result = false;
-		final Iterator<MLDataPair> pairs = data.iterator();
-		MLDataPair pair = null;
+		final Iterator<NeuralDataPair> pairs = data.iterator();
+		NeuralDataPair pair = null;
 
 		Letter<Double> ideal = null;
 		Letter<Double> computed = null;
@@ -83,24 +83,27 @@ public class ElmanWordDetector implements WordsDetector{
 		}
 		return result;
 	}
+	private synchronized static OpenCLTrainingProfile getProfile(){
+		return new OpenCLTrainingProfile(Beemo.getDevice());
+	}
 	public boolean train(Word word) {
 		if (network == null){
 			network = createNetwork(word.getLetters()[0].size(),word.size());
 		}
 
-		MLDataSet set = WordFactory.toDataSet(word);
-
-		final MLTrain trainMain = new ResilientPropagation((ContainsFlat)network, set); 
+		NeuralDataSet set = WordFactory.toDataSet(word);
+		
+		final Train trainMain = new ResilientPropagation(network, set, getProfile()); 
 		
 
 				
 		double error = 50;
-		while (!doesRememberEverything(set,5) && error > 0) {
+		while (!doesRememberEverything(set,50) && error > 0) {
 			//			EncogUtility.trainToError(network, set, error);
 			StopTrainingStrategy stop = new StopTrainingStrategy(0.001, 100);
 			trainMain.addStrategy(stop);
 			while (! stop.shouldStop()){
-				trainMain.iteration(100);
+				trainMain.iteration();
 			}
 			log.debug("error {}",trainMain.getError());
 			error--;
@@ -122,12 +125,12 @@ public class ElmanWordDetector implements WordsDetector{
 	}
 
 	public void save(Path location) {
-		EncogDirectoryPersistence.saveObject(location.toFile(), network);
+//		EncogDirectoryPersistence.saveObject(location.toFile(), network);
 
 	}
 
 	public void load(Path location) {
-		network = (BasicNetwork) EncogDirectoryPersistence.loadObject(location.toFile());
+//		network = (BasicNetwork) EncogDirectoryPersistence.loadObject(location.toFile());
 
 	}
 	public void clean(){

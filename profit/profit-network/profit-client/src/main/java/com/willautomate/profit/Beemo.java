@@ -3,6 +3,7 @@ package com.willautomate.profit;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -12,6 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.encog.Encog;
+import org.encog.engine.opencl.EncogCLDevice;
 import org.neo4j.examples.server.Connector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,16 @@ public class Beemo {
 	public static ReentrantReadWriteLock.WriteLock shutdownLock = new ReentrantReadWriteLock().writeLock();
 	
 	private Beemo() {}
+	
+private static AtomicInteger dev = new AtomicInteger(0);
+	public static synchronized EncogCLDevice getDevice(){
+		List<EncogCLDevice> devices = Encog.getInstance().getCL().getDevices();
+		if (dev.get() >= devices.size()){
+			dev.set(0);
+		}
+		return devices.get(dev.getAndIncrement());
+	}
+	
 	private static String client= null;
 	private static String getClientName(){
 		if (client == null){
