@@ -106,7 +106,7 @@ public class ElmanWordDetector implements WordsDetector{
 			error--;
 		}
 		trainMain.finishTraining();
-		log.info("tried {} times",100-error);
+		log.info("tried {} times",50-error);
 		if (error == 0){
 			log.error("I didnt learn");
 			return false;

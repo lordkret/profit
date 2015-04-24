@@ -22,17 +22,37 @@ public class GrowingWordWalker implements Runnable{
 	public GrowingWordWalker(int i,NetworkPattern pattern){
 		this(i,1,pattern);
 	}
+	private final int startSize ;
+	private final int maxSize ;
+	private final int distancePatternQuantifier;
+	private final int error;
+	public GrowingWordWalker(int i, int error, NetworkPattern pattern,int startSize, int maxSize){
+		this.pattern = pattern;
+		this.startSize = startSize;
+		this.maxSize = maxSize;
+		this.error=error;
+		this.distancePatternQuantifier = i;
+		configureWalker();
+	}
+	private final void configureWalker(){
+		csv = Paths.get("src/main/resources/fulldata.csv");
+		walker = new WordWalker(50, 5, DataConfiguration.LetterPattern.MAIN.toPattern())
+		.withDataFile(csv)
+		.withMaximumError(error)
+		.withStartSize(startSize)
+		.withMaxSize(maxSize)
+		.saveNetwork(false)
+		.withPattern(pattern)
+		.withDistancePattern(name+distancePatternQuantifier);
+
+	}
 	public GrowingWordWalker(int i, int error, NetworkPattern pattern) {
-		 csv = Paths.get("src/main/resources/fulldata.csv");
-		 this.pattern = pattern;
-		 walker = new WordWalker(50, 5, DataConfiguration.LetterPattern.MAIN.toPattern())
-				 .withDataFile(csv)
-				 .withMaximumError(error)
-				 .withStartSize(30)
-				 .withMaxSize(43)
-				 .saveNetwork(false)
-				 .withPattern(pattern)
-				 .withDistancePattern(name+i);
+		this.startSize = 30;
+		this.maxSize = 43;
+		this.pattern = pattern; 
+		this.distancePatternQuantifier = i;
+		this.error=error;
+		configureWalker();
 	}
 
 	@Override

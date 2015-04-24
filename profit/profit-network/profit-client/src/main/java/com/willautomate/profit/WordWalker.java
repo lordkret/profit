@@ -106,10 +106,13 @@ public class WordWalker implements Runnable {
         Thread.currentThread().setName(distancePattern);
         try {
             network = new ElmanWordDetector(debinarizedLetterSize);
-
+            
             Path profitDistance = Paths.get(String.format("%s-%s", distancePattern,distancePostfix));
             if (save && !Files.exists(profitDistance))
                 Files.createFile(profitDistance);
+            if (save){
+            	network.save(Paths.get(String.format("net-initial-%s", profitDistance)));
+            }
             Path minimumDistanceF = null;
             
             if (save)

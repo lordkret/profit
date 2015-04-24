@@ -50,7 +50,7 @@ public class Connector
 
 		//        createNumbers();
 		//        [14.0, 23.0, 24.0, 30.0, 49.0]
-//		createLetter(24,32,34,35,49,1,2);
+		createLetter(5,19,29,31,40,3,10);
 		//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
 	}
 
@@ -93,6 +93,7 @@ public class Connector
 
 	}
 	private static void createLetter(int m1,int m2,int m3, int m4, int m5, int l1, int l2){
+		sendTransactionalCypherQuery("match (l:Letter {LATEST:true}) remove l.LATEST set l.PREVIOUS:true");
 		sendTransactionalCypherQuery( String.format("match "
 				+ "(m1:Number),"
 				+ "(m2:Number),"
