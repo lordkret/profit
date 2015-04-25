@@ -20,7 +20,7 @@ public class Client {
 			wordSerice.execute(new LuckyWalker(8500+i,NetworkPattern.Elmann,80,90));
 			wordSerice.execute(new LuckyWalker(9500+i,NetworkPattern.Elmann,90,100));
 			wordSerice.execute(new LuckyWalker(10000+i,NetworkPattern.Elmann,100,135));
-//			wordSerice.execute(new LuckyWalker(i,NetworkPattern.ElmannStep));
+			wordSerice.execute(new LuckyWalker(i,NetworkPattern.ElmannStep));
 			wordSerice.execute(new GrowingWordWalker(100+i,0,NetworkPattern.Elmann,2,30));
 			wordSerice.execute(new GrowingWordWalker(200+i,0,NetworkPattern.Elmann,30,45));
 			wordSerice.execute(new GrowingWordWalker(300+i,0,NetworkPattern.Elmann,45,60));

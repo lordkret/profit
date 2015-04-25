@@ -105,14 +105,12 @@ public class WordWalker implements Runnable {
         String distancePostfix = Thread.currentThread().getName();
         Thread.currentThread().setName(distancePattern);
         try {
+        	
             network = new ElmanWordDetector(debinarizedLetterSize);
             
             Path profitDistance = Paths.get(String.format("%s-%s", distancePattern,distancePostfix));
             if (save && !Files.exists(profitDistance))
                 Files.createFile(profitDistance);
-            if (save){
-            	network.save(Paths.get(String.format("net-initial-%s", profitDistance)));
-            }
             Path minimumDistanceF = null;
             
             if (save)
@@ -127,7 +125,11 @@ public class WordWalker implements Runnable {
                 Word p = WordFactory.fromCsv(binarizedLetterSize,csv, 2, wordSize, wordDataPattern);
                 network.clean();
                 log.warn("Starting training with word size {}",wordSize);
-                learned = network.train(p);
+                if (save){
+                	learned = network.train(p,String.format("net-initial-%s", profitDistance));
+                } else {
+                	learned = network.train(p);
+                }
                 Letter<Double> letterToUser = p.getLetters()[p.getLetters().length - 1];
                 Letter<Double> predicted = (Letter<Double>) network.predict(letterToUser);
                 distance = DoubleLetterDistance.calculate(toPredict, predicted, debinarizedLetterSize);

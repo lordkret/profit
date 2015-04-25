@@ -1,6 +1,7 @@
 package com.willautomate.profit;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,7 +29,7 @@ import com.willautomate.profit.impl.BasicLetter;
 import com.willautomate.profit.impl.DoubleBinarizer;
 import com.willautomate.profit.impl.DoubleLetterDistance;
 
-public class ElmanWordDetector implements WordsDetector{
+public class ElmanWordDetector {
 
 	private BasicNetwork network;
 
@@ -83,11 +84,13 @@ public class ElmanWordDetector implements WordsDetector{
 		}
 		return result;
 	}
-	public boolean train(Word word) {
+	public boolean train(Word word, String... fileToSave) {
 		if (network == null){
 			network = createNetwork(word.getLetters()[0].size(),word.size());
 		}
-
+		if (fileToSave.length > 0){
+			this.save(Paths.get(fileToSave[0]));
+		}
 		MLDataSet set = WordFactory.toDataSet(word);
 
 		final MLTrain trainMain = new ResilientPropagation((ContainsFlat)network, set); 
@@ -122,6 +125,7 @@ public class ElmanWordDetector implements WordsDetector{
 	}
 
 	public void save(Path location) {
+		
 		EncogDirectoryPersistence.saveObject(location.toFile(), network);
 
 	}
