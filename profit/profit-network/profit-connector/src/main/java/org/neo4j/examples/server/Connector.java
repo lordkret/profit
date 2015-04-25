@@ -93,7 +93,7 @@ public class Connector
 
 	}
 	private static void createLetter(int m1,int m2,int m3, int m4, int m5, int l1, int l2){
-		sendTransactionalCypherQuery("match (l:Letter {LATEST:true}) remove l.LATEST set l.PREVIOUS:true");
+		sendTransactionalCypherQuery("match (l:Letter {LATEST:true}) remove l.LATEST return l");
 		sendTransactionalCypherQuery( String.format("match "
 				+ "(m1:Number),"
 				+ "(m2:Number),"

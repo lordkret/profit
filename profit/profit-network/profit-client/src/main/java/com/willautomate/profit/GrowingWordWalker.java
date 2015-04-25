@@ -41,7 +41,7 @@ public class GrowingWordWalker implements Runnable{
 		.withMaximumError(error)
 		.withStartSize(startSize)
 		.withMaxSize(maxSize)
-		.saveNetwork(false)
+		.saveNetwork(true)
 		.withPattern(pattern)
 		.withDistancePattern(name+distancePatternQuantifier);
 

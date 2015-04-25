@@ -36,7 +36,7 @@ public class LuckyWalker implements Runnable{
 		.withMaximumError(0)
 		.withStartSize(startSize)
 		.withMaxSize(maxSize)
-		.saveNetwork(false)
+		.saveNetwork(true)
 		.withPattern(pattern)
 		.withDistancePattern(name+distancePatternQuantifier);
 
