@@ -175,4 +175,8 @@ public class WordWalker implements Runnable {
 	public boolean isSmart() {
 		return learned;
 	}
+	
+	public String getPattern(){
+		return network.getPattern();
+	}
 }

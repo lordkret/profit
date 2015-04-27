@@ -8,6 +8,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
+import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -83,17 +84,27 @@ public class ElmanWordDetector implements WordsDetector{
 		}
 		return result;
 	}
+	
 	private synchronized static OpenCLTrainingProfile getProfile(){
-		return new OpenCLTrainingProfile(Beemo.getDevice());
+		EncogCLDevice dev = Beemo.getDevice();
+		String profile = dev.toString();
+		String curN = Thread.currentThread().getName();
+		if (curN.endsWith("-CPU") || curN.endsWith("-GPU")){
+			curN = curN.split("-.PU")[0];
+		}
+		Thread.currentThread().setName(curN+"-"+profile.substring(0, 3));
+		return new OpenCLTrainingProfile(dev);
 	}
+	private String pattern;
 	public boolean train(Word word) {
 		if (network == null){
 			network = createNetwork(word.getLetters()[0].size(),word.size());
 		}
 
 		NeuralDataSet set = WordFactory.toDataSet(word);
-		
-		final Train trainMain = new ResilientPropagation(network, set, getProfile()); 
+		OpenCLTrainingProfile profile = getProfile();
+		pattern = profile.getDevice().toString();
+		final Train trainMain = new ResilientPropagation(network, set, profile); 
 		
 
 				
@@ -143,5 +154,8 @@ public class ElmanWordDetector implements WordsDetector{
 	}
 	public double getWeightValue() {
 		return weightValue;
+	}
+	public String getPattern() {
+		return pattern;
 	}
 }
