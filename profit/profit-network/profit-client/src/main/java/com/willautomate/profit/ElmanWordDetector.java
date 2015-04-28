@@ -98,12 +98,12 @@ public class ElmanWordDetector {
 		double error = 50;
 		while (!doesRememberEverything(set,5) && error > 0) {
 			//			EncogUtility.trainToError(network, set, error);
-			StopTrainingStrategy stop = new StopTrainingStrategy(0.001, 1000);
+			StopTrainingStrategy stop = new StopTrainingStrategy(0.001, 300);
 			trainMain.addStrategy(stop);
 			while (! stop.shouldStop()){
 				trainMain.iteration();
 			}
-			log.debug("error {}",trainMain.getError());
+			log.warn("error {}",trainMain.getError());
 			error--;
 		}
 		trainMain.finishTraining();
