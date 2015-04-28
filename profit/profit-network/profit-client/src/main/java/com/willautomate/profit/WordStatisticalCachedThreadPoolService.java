@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class WordStatisticalCachedThreadPoolService extends ThreadPoolExecutor {
 
 	private static final int getMaxPoolSize(){
-		int result = 5* Runtime.getRuntime().availableProcessors();
+		int result = Runtime.getRuntime().availableProcessors();
 		String maxPool = System.getProperty("threads");
 		if (maxPool != null ){
 			result =  Integer.decode(maxPool);
