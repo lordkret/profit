@@ -123,7 +123,7 @@ public class WordWalker implements Runnable {
             
             while (!wordDone) {
                 Word p = WordFactory.fromCsv(binarizedLetterSize,csv, 2, wordSize, wordDataPattern);
-                network.clean();
+//                network.clean();
                 log.warn("Starting training with word size {}",wordSize);
                 if (save){
                 	learned = network.train(p,String.format("net-initial-%s", profitDistance));
