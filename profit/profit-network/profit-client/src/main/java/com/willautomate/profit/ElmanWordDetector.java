@@ -46,7 +46,7 @@ public class ElmanWordDetector {
 
 		pattern = new JordanPattern();
 		pattern.setInputNeurons(letterSize);
-		pattern.addHiddenLayer(10000);
+		pattern.addHiddenLayer(3000);
 		pattern.setOutputNeurons(letterSize);
 		pattern.setActivationFunction(new ActivationStep());
 		BasicNetwork result = (BasicNetwork) pattern.generate();
@@ -95,10 +95,10 @@ public class ElmanWordDetector {
 		
 
 				
-		double error = 50;
+		double error = 5;
 		while (!doesRememberEverything(set,5) && error > 0) {
 			//			EncogUtility.trainToError(network, set, error);
-			StopTrainingStrategy stop = new StopTrainingStrategy(0.001, 300);
+			StopTrainingStrategy stop = new StopTrainingStrategy(0.01, 100);
 			trainMain.addStrategy(stop);
 			while (! stop.shouldStop()){
 				trainMain.iteration();
@@ -107,7 +107,7 @@ public class ElmanWordDetector {
 			error--;
 		}
 		trainMain.finishTraining();
-		log.info("tried {} times",50-error);
+		log.info("tried {} times",5-error);
 		if (error == 0){
 			log.error("I didnt learn");
 			return false;
