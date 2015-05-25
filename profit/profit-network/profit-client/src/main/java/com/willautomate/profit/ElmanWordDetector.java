@@ -7,14 +7,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.encog.engine.network.activation.ActivationStep;
+import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.strategy.HybridStrategy;
 import org.encog.ml.train.strategy.StopTrainingStrategy;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
+import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.networks.training.pso.NeuralPSO;
 import org.encog.neural.pattern.JordanPattern;
 import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.encog.persist.EncogDirectoryPersistence;
@@ -45,8 +49,10 @@ public class ElmanWordDetector {
 		NeuralNetworkPattern pattern;
 
 		pattern = new JordanPattern();
+
+
 		pattern.setInputNeurons(letterSize);
-		pattern.addHiddenLayer(3000);
+		pattern.addHiddenLayer(1000);
 		pattern.setOutputNeurons(letterSize);
 		pattern.setActivationFunction(new ActivationStep());
 		BasicNetwork result = (BasicNetwork) pattern.generate();
@@ -92,13 +98,13 @@ public class ElmanWordDetector {
 		MLDataSet set = WordFactory.toDataSet(word);
 
 		final MLTrain trainMain = new ResilientPropagation((ContainsFlat)network, set); 
-		
-
+		final MLTrain trainAMain = new NeuralPSO(network, new NguyenWidrowRandomizer(), new TrainingSetScore(set), 33);
+		trainMain.addStrategy(new HybridStrategy(trainAMain));
 				
-		double error = 5;
-		while (!doesRememberEverything(set,5) && error > 0) {
+		double error = 3;
+		while (!doesRememberEverything(set,1) && error > 0) {
 			//			EncogUtility.trainToError(network, set, error);
-			StopTrainingStrategy stop = new StopTrainingStrategy(0.01, 100);
+			StopTrainingStrategy stop = new StopTrainingStrategy(0.001, 20);
 			trainMain.addStrategy(stop);
 			while (! stop.shouldStop()){
 				trainMain.iteration();
@@ -107,7 +113,7 @@ public class ElmanWordDetector {
 			error--;
 		}
 		trainMain.finishTraining();
-		log.info("tried {} times",5-error);
+		log.warn("tried {} times",3-error);
 		if (error == 0){
 			log.error("I didnt learn");
 			return false;
