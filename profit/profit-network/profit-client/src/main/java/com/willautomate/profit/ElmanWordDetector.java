@@ -52,7 +52,7 @@ public class ElmanWordDetector {
 
 
 		pattern.setInputNeurons(letterSize);
-		pattern.addHiddenLayer(1000);
+		pattern.addHiddenLayer(5000);
 		pattern.setOutputNeurons(letterSize);
 		pattern.setActivationFunction(new ActivationStep());
 		BasicNetwork result = (BasicNetwork) pattern.generate();
