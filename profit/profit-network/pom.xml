@@ -10,6 +10,7 @@
 		<module>profit-remote-api</module>
 		<module>profit-client</module>
 		<module>profit-connector</module>
+		<module>profit-server-daemon</module>
 	</modules>
 	<build>
 	<plugins>
