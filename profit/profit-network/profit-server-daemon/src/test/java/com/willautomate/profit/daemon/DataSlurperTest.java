@@ -1,11 +1,8 @@
 package com.willautomate.profit.daemon;
 
 import java.text.ParseException;
+import java.util.List;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.junit.Test;
 
 public class DataSlurperTest {
@@ -19,16 +16,9 @@ public class DataSlurperTest {
 
 	@Test
 	public void testGetResult() throws ParseException{
-//		System.out.println(DataSlurper.getResult(DataSlurper.getUris().get(0)));
-		Document doc = Jsoup.parse(DataSlurper.getResult(DataSlurper.getUris().get(0)));
-//		System.out.println(doc);
-		Element sc = doc.select(".twitter-share-button").first().getAllElements().first();
-		System.out.println(sc.toString().replaceAll(".*Numbers:", "").replaceAll("Raffle:.*", ""));
-//		System.out.println(sc.);
-		Element numbers = doc.getElementById("jsBallOrderCell");
-		Elements el = doc.select(".ordered.orderedFix");
-		System.out.println(el);
-		numbers.getElementById("ball");
-		System.out.println("Numbers in drawn order " + numbers.html());
+		String uri = DataSlurper.getUris().get(0);
+		String page = DataSlurper.getResult(uri);
+		List<String> numbers = DataSlurper.getNumbers(page);
+		System.out.println(numbers);
 	}
 }

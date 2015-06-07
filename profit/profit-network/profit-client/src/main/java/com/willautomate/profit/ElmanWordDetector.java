@@ -98,8 +98,8 @@ public class ElmanWordDetector {
 		MLDataSet set = WordFactory.toDataSet(word);
 
 		final MLTrain trainMain = new ResilientPropagation((ContainsFlat)network, set); 
-		final MLTrain trainAMain = new NeuralPSO(network, new NguyenWidrowRandomizer(), new TrainingSetScore(set), 33);
-		trainMain.addStrategy(new HybridStrategy(trainAMain));
+//		final MLTrain trainAMain = new NeuralPSO(network, new NguyenWidrowRandomizer(), new TrainingSetScore(set), 33);
+//		trainMain.addStrategy(new HybridStrategy(trainAMain));
 				
 		double error = 3;
 		while (!doesRememberEverything(set,1) && error > 0) {

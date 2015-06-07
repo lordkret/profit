@@ -7,14 +7,19 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.core.MediaType;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Function;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -60,13 +65,23 @@ public class DataSlurper {
 	
 	public static  String getResult(String uri){
 		WebResource resource = Client.create().resource( uri );
-
-
 		ClientResponse response = resource
 				.get( ClientResponse.class );
 		String result = response.getEntity( String.class ) ;
 		response.close();
 		return result;
+	}
+	public static List<String> getNumbers(String resultPage){
+		Document doc = Jsoup.parse(resultPage);
+		Element twitterResult = doc.select(".twitter-share-button").first().getAllElements().first();
+		String d = twitterResult.toString().replaceAll(".*Numbers:", "").replaceAll("\".*", "");
+		Iterable<String> nums = Splitter.on(Pattern.compile(",|:|;")).trimResults().omitEmptyStrings().split(d);
+		return Lists.newArrayList(Iterables.transform(nums, new Function<String,String>(){
+			@Override
+			public String apply(String arg0) {
+				return CharMatcher.DIGIT.retainFrom(arg0);
+			}		
+		}));
 	}
 }
 
