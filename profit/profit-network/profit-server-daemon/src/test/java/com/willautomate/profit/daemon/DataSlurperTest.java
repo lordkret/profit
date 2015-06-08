@@ -16,9 +16,13 @@ public class DataSlurperTest {
 
 	@Test
 	public void testGetResult() throws ParseException{
-		String uri = DataSlurper.getUris().get(0);
+		for (int i=0; i< 1; i++){
+		String uri = DataSlurper.getUris().get(i);
 		String page = DataSlurper.getResult(uri);
 		List<String> numbers = DataSlurper.getNumbers(page);
-		System.out.println(numbers);
+		boolean hadWinner = DataSlurper.hadWinner(page);
+		System.out.println(numbers + " :: " + hadWinner);
+		System.out.println(DataSlurper.createLetter(uri));
+		}
 	}
 }
