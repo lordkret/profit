@@ -9,12 +9,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.core.MediaType;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.stringtemplate.v4.ST;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Function;
@@ -24,31 +22,46 @@ import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import org.stringtemplate.v4.ST;
 public class DataSlurper {
 
 	public static final String BEGGINING_OF_TIME = "10-05-2011";
 	
-	public void preSlurp(){
-		
+	public List<String> preSlurp(){
+		try {
+			return microSlurp(BEGGINING_OF_TIME);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	public void microSlurp(){
-
+	public List<String> microSlurp(String lastDate) throws ParseException{
+		List<String> commands = Lists.newArrayList();
+		for (String uri : getUris(lastDate)){
+			commands.add(createLetter(uri));
+		}
+		return commands;
 	}
-	
-	public static List <String> getUris() throws ParseException{
+	public static List <String> getUris(){
+		try {
+			return getUris(BEGGINING_OF_TIME);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static List <String> getUris(String beggining) throws ParseException{
 		List<Date> results = Lists.newArrayList();
 		Calendar start = Calendar.getInstance();
 		final DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy"); 
-		start.setTime(formatter.parse(BEGGINING_OF_TIME));
+		start.setTime(formatter.parse(beggining));
 		Calendar end = Calendar.getInstance();
 		end.setTime(new Date());
 		
 		for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 7), date = start.getTime()) {
 			results.add(date);
 		}
-		start.setTime(formatter.parse(BEGGINING_OF_TIME));
+		start.setTime(formatter.parse(beggining));
 		start.add(Calendar.DATE, 3);
 		for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 7), date = start.getTime()) {
 			results.add(date);
@@ -86,25 +99,17 @@ public class DataSlurper {
 	public static boolean hadWinner(String resultPage){
 		return ! resultPage.contains("Rollover");
 	}
-	private static String LETTER_TEMPLATE = "match (prev:Letter {LATEST:true}),"
-				+ "(m1:Number),"
-				+ "(m2:Number),"
-				+ "(m3:Number),"
-				+ "(m4:Number),"
-				+ "(m5:Number),"
-				+ "(l1:Number),"
-				+ "(l2:Number) "
-				+ "where m1.value=<m1> and m2.value=<m2> and m3.value=<m3> and m4.value=<m4> and m5.value=<m5>"
-				+ " and l1.value=<l1> and l2.value=<l2>"
-				+ " create (n:Letter {LATEST:true, date:\"<date>\", hadWinner:<winner>} ) "
-				+ " create (n)-[:MAIN {order:1}]->(m1) "
-				+ "create (n)-[:MAIN {order:2}]->(m2) "
-				+ "create (n)-[:MAIN {order:3}]->(m3) "
-				+ "create (n)-[:MAIN {order:4}]->(m4) "
-				+ "create (n)-[:MAIN {order:5}]->(m5) "
-				+ "create (n)-[:LUCKY {order:1}]->(l1) "
-				+ "create (n)-[:LUCKY {order:2}]->(l2) "
-				+ "create (n)-[:PREVIOUS]->(prev) "
+	private static String LETTER_TEMPLATE = "match (prev:Letter {LATEST:true}) with prev "
+				+ "remove prev.LATEST "
+				+ "create (n:Letter {LATEST:true, date:\"<date>\", hadWinner:<winner>}) "
+				+ "create (n)-[:MAIN {order:1}]->(m1:Number {value:<m1>}) "
+				+ "create (n)-[:MAIN {order:2}]->(m2:Number {value:<m2>}) "
+				+ "create (n)-[:MAIN {order:3}]->(m3:Number {value:<m3>}) "
+				+ "create (n)-[:MAIN {order:4}]->(m4:Number {value:<m4>}) "
+				+ "create (n)-[:MAIN {order:5}]->(m5:Number {value:<m5>}) "
+				+ "create (n)-[:LUCKY {order:1}]->(l1:Number {value:<l1>}) "
+				+ "create (n)-[:LUCKY {order:2}]->(l2:Number {value:<l2>}) "
+				+ "create (n)-[:PREVIOUS]->(prev)"
 				+ "return Id(n)";
 	public static String createLetter(String uri){
 		ST letterTemplate = new ST(LETTER_TEMPLATE);
@@ -123,5 +128,7 @@ public class DataSlurper {
 		.add("date",date);
 		return letterTemplate.render();
 	}
+	
+	
 }
 

@@ -1,6 +1,5 @@
 package com.willautomate.profit.daemon;
 
-import java.text.ParseException;
 import java.util.List;
 
 import org.junit.Test;
@@ -8,14 +7,14 @@ import org.junit.Test;
 public class DataSlurperTest {
 
 	@Test
-	public void testGetUris() throws ParseException {
+	public void testGetUris() {
 		for (String s: DataSlurper.getUris()){
 			System.out.println(s);
 		}
 	}
 
 	@Test
-	public void testGetResult() throws ParseException{
+	public void testGetResult() {
 		for (int i=0; i< 1; i++){
 		String uri = DataSlurper.getUris().get(i);
 		String page = DataSlurper.getResult(uri);
