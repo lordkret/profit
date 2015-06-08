@@ -212,7 +212,7 @@ public class Connector
 		}
 	}
 	public static void sendUnsentQueries() throws IOException{
-		List<String> qs = Files.readAllLines(Paths.get("/home/erafkos/profit/profit/profit-network/profit-client/unQ"), Charset.defaultCharset());
+		List<String> qs = Files.readAllLines(Paths.get("unsentQueries"), Charset.defaultCharset());
 		for (String q : qs){
 			sendQuery(q);
 		}

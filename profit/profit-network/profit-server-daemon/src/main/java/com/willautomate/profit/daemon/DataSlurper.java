@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.stringtemplate.v4.ST;
 
 import com.google.common.base.CharMatcher;
@@ -25,8 +27,8 @@ import com.sun.jersey.api.client.WebResource;
 public class DataSlurper {
 
 	public static final String BEGGINING_OF_TIME = "10-05-2011";
-	
-	public List<String> preSlurp(){
+	private static final Logger log = LoggerFactory.getLogger(DataSlurper.class);
+	public static List<String> preSlurp(){
 		try {
 			return microSlurp(BEGGINING_OF_TIME);
 		} catch (ParseException e) {
@@ -35,10 +37,12 @@ public class DataSlurper {
 		return null;
 	}
 	
-	public List<String> microSlurp(String lastDate) throws ParseException{
+	public static List<String> microSlurp(String lastDate) throws ParseException{
 		List<String> commands = Lists.newArrayList();
 		for (String uri : getUris(lastDate)){
+			log.info("Slurping for {}",uri);
 			commands.add(createLetter(uri));
+			log.info("Command: {}",Iterables.getLast(commands));
 		}
 		return commands;
 	}
@@ -109,8 +113,8 @@ public class DataSlurper {
 				+ "create (n)-[:MAIN {order:5}]->(m5:Number {value:<m5>}) "
 				+ "create (n)-[:LUCKY {order:1}]->(l1:Number {value:<l1>}) "
 				+ "create (n)-[:LUCKY {order:2}]->(l2:Number {value:<l2>}) "
-				+ "create (n)-[:PREVIOUS]->(prev)"
-				+ "return Id(n)";
+				+ "create (n)-[:PREVIOUS]->(prev) "
+				+ "return Id(n) ";
 	public static String createLetter(String uri){
 		ST letterTemplate = new ST(LETTER_TEMPLATE);
 		String date = Iterables.getLast(Splitter.on("/").omitEmptyStrings().split(uri));

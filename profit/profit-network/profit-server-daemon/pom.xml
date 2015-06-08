@@ -9,11 +9,6 @@
 	<artifactId>profit-server-daemon</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>1.9</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
@@ -24,27 +19,7 @@
 			<version>1.7.2</version>
 		</dependency>
 
-		<dependency>
 
-			<groupId>org.neo4j</groupId>
-			<artifactId>server-api</artifactId>
-			<version>2.2.0-RC01</version>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-graph-algo</artifactId>
-			<version>2.2.0-RC01</version>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-cypher</artifactId>
-			<version>2.2.0-RC01</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>1.9</version>
-		</dependency>
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -58,28 +33,9 @@
 			<version>1.3</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-kernel</artifactId>
-			<version>2.2.0-RC01</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
+		
 
-		<dependency>
-			<groupId>org.neo4j.test</groupId>
-			<artifactId>neo4j-harness</artifactId>
-			<version>2.2.0-RC01</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.neo4j.app</groupId>
-			<artifactId>neo4j-server</artifactId>
-			<version>2.2.0-RC01</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
+		
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -97,6 +53,11 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.willautomate.profit</groupId>
+			<artifactId>profit-remote-api</artifactId>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<repositories>
