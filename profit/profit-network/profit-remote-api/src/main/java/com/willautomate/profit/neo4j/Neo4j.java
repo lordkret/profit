@@ -28,7 +28,7 @@ public class Neo4j {
 		final String txUri = SERVER_ROOT_URI + "transaction/commit";
 		WebResource resource = Client.create().resource( txUri );
 
-
+		log.info("Posting {}",query);
 		ClientResponse response = resource
 				.accept( MediaType.APPLICATION_JSON )
 				.type( MediaType.APPLICATION_JSON )

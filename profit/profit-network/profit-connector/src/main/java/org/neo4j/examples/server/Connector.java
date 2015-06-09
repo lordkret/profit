@@ -48,9 +48,9 @@ public class Connector
 		checkDatabaseIsRunning();
 //		sendUnsentQueries();
 
-		//        createNumbers();
+//		        createNumbers();
 		//        [14.0, 23.0, 24.0, 30.0, 49.0]
-		createLetter(35,37,31,26,30,11,8);
+//		createLetter(35,37,31,26,30,11,8);
 		//        createPrediction(14, 23, 24, 30, 49, 0, 0, 30, 2);
 	}
 

@@ -103,7 +103,7 @@ public class DataSlurper {
 	public static boolean hadWinner(String resultPage){
 		return ! resultPage.contains("Rollover");
 	}
-	private static String LETTER_TEMPLATE = "match (prev:Letter {LATEST:true}) with prev "
+	private static String LETTER_TEMPLATE = "match (prev:Letter {LATEST:true}), "
 			+ "(m1:Number {value:<m1>}),"
 			+ "(m2:Number {value:<m2>}),"
 			+ "(m3:Number {value:<m3>}),"
