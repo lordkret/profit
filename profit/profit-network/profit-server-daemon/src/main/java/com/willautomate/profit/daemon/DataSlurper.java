@@ -36,7 +36,7 @@ public class DataSlurper {
 		}
 		return null;
 	}
-	
+
 	public static List<String> microSlurp(String lastDate) throws ParseException{
 		List<String> commands = Lists.newArrayList();
 		for (String uri : getUris(lastDate)){
@@ -61,7 +61,7 @@ public class DataSlurper {
 		start.setTime(formatter.parse(beggining));
 		Calendar end = Calendar.getInstance();
 		end.setTime(new Date());
-		
+
 		for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 7), date = start.getTime()) {
 			results.add(date);
 		}
@@ -79,7 +79,7 @@ public class DataSlurper {
 			}
 		});
 	}
-	
+
 	public static  String getResult(String uri){
 		WebResource resource = Client.create().resource( uri );
 		ClientResponse response = resource
@@ -104,17 +104,24 @@ public class DataSlurper {
 		return ! resultPage.contains("Rollover");
 	}
 	private static String LETTER_TEMPLATE = "match (prev:Letter {LATEST:true}) with prev "
-				+ "remove prev.LATEST "
-				+ "create (n:Letter {LATEST:true, date:\"<date>\", hadWinner:<winner>}) "
-				+ "create (n)-[:MAIN {order:1}]->(m1:Number {value:<m1>}) "
-				+ "create (n)-[:MAIN {order:2}]->(m2:Number {value:<m2>}) "
-				+ "create (n)-[:MAIN {order:3}]->(m3:Number {value:<m3>}) "
-				+ "create (n)-[:MAIN {order:4}]->(m4:Number {value:<m4>}) "
-				+ "create (n)-[:MAIN {order:5}]->(m5:Number {value:<m5>}) "
-				+ "create (n)-[:LUCKY {order:1}]->(l1:Number {value:<l1>}) "
-				+ "create (n)-[:LUCKY {order:2}]->(l2:Number {value:<l2>}) "
-				+ "create (n)-[:PREVIOUS]->(prev) "
-				+ "return Id(n) ";
+			+ "(m1:Number {value:<m1>}),"
+			+ "(m2:Number {value:<m2>}),"
+			+ "(m3:Number {value:<m3>}),"
+			+ "(m4:Number {value:<m4>}),"
+			+ "(m5:Number {value:<m5>}),"
+			+ "(l1:Number {value:<l1>}),"
+			+ "(l2:Number {value:<l2>}) "
+			+ "remove prev.LATEST "
+			+ "create (n:Letter {LATEST:true, date:\"<date>\", hadWinner:<winner>}) "
+			+ "create (n)-[:MAIN {order:1}]->(m1) "
+			+ "create (n)-[:MAIN {order:2}]->(m2) "
+			+ "create (n)-[:MAIN {order:3}]->(m3) "
+			+ "create (n)-[:MAIN {order:4}]->(m4) "
+			+ "create (n)-[:MAIN {order:5}]->(m5) "
+			+ "create (n)-[:LUCKY {order:1}]->(l1) "
+			+ "create (n)-[:LUCKY {order:2}]->(l2) "
+			+ "create (n)-[:PREVIOUS]->(prev) "
+			+ "return Id(n) ";
 	public static String createLetter(String uri){
 		ST letterTemplate = new ST(LETTER_TEMPLATE);
 		String date = Iterables.getLast(Splitter.on("/").omitEmptyStrings().split(uri));
@@ -132,7 +139,7 @@ public class DataSlurper {
 		.add("date",date);
 		return letterTemplate.render();
 	}
-	
-	
+
+
 }
 

@@ -8,9 +8,8 @@ public class DataSlurperTest {
 
 	@Test
 	public void testGetUris() {
-		for (String s: DataSlurper.getUris()){
-			System.out.println(s);
-		}
+		System.out.println(DataVomiter.getLastDate());
+		
 	}
 
 	@Test

@@ -20,6 +20,7 @@ public class DataVomiter {
 	
 	private static final Logger log = LoggerFactory.getLogger(DataVomiter.class);
 	private static String getFirstRestult(String neo4jAnser){
+		System.out.println(neo4jAnser);
 		JsonElement el = new JsonParser().parse(neo4jAnser);
 		return el.getAsJsonObject().
 				get("results")
