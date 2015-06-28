@@ -1,5 +1,7 @@
 package com.willautomate.profit;
 
+import java.nio.file.Paths;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,24 +23,32 @@ public class TimeWalker implements Runnable {
 		 Word word;
 		 
 		while (keepItGoing){
+			log.info("Fetching word with size {}",currentSize);
 			word = WordProvider.getWord(currentSize, main);
 			int letterSize = word.getLetters()[0].getRawData().length;
 			network = new ElmanWordDetector(letterSize);	
 			if (network.train(word)){
+				log.info("Training finished");
 				Letter predicted = network.predict(WordProvider.getLetter(currentSize, main));
-				Letter toPredict = WordProvider.getLetter(currentSize, main);
-				wordDone = distance >= DoubleLetterDistance.calculate(toPredict, predicted, letterSize);
+				log.info("Predicted {} letter",predicted);
+				Letter toPredict = WordProvider.getLetter(currentSize+1, main);
+				double calculatedDistance = DoubleLetterDistance.calculate(toPredict, predicted, letterSize);
+				wordDone = distance >= calculatedDistance;
+				log.info("Distance to {} is {}", toPredict,calculatedDistance);
 			}
 			keepItGoing = ! wordDone && WordProvider.getMaxWordSize() > currentSize;
 			if (! wordDone){
+				log.info("This network seems to be useless, restarting");
 				network.clean();
-				currentSize  =2;
+				currentSize=2;
 			} else {
 				currentSize++;
 			}
 		}
 		if (wordDone) {
-			
+			String netName = String.format("good-%s-%s.network", distance,System.currentTimeMillis());
+			log.info("Got good network {}" , netName);
+			network.save(Paths.get(netName));
 		}
 		
 	}
