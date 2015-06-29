@@ -9,7 +9,7 @@ public class TimeWalkerTest {
 	@Test
 	public void test() throws Exception {
 		new Thread(new TimeWalker()).start();
-		Thread.sleep(6000);
+		Thread.sleep(60000);
 	}
 
 }

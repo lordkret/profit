@@ -23,6 +23,7 @@ public class DoubleBinarizer  {
 	private DoubleBinarizer(){}
 
 	public static Double[] binarize(int bitsSize, Collection<String> collection) {
+		log.info("Binarizing {}",collection);
 		Double[] result = new Double[bitsSize];
 		Arrays.fill(result, 0D);
 		for (String value : collection) {

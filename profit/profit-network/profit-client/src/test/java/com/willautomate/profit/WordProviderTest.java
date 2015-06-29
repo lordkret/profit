@@ -2,13 +2,15 @@ package com.willautomate.profit;
 
 import org.junit.Test;
 
+import com.google.common.base.Joiner;
+
 import java.util.Arrays;
 
 public class WordProviderTest {
 
     @Test
     public void testGetWord() throws Exception {
-        System.out.println(Arrays.toString(WordProvider.getWord(3, true).getLetters()));
+        System.out.println(Joiner.on("\n").join(WordProvider.getWord(3, true).getLetters()));
 //        System.out.println(Arrays.toString(WordProvider.getWord(5000, true).getLetters()));
     }
     

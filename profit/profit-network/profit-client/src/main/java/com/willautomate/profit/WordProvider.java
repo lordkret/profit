@@ -11,6 +11,7 @@ import com.willautomate.profit.api.Letter;
 import com.willautomate.profit.api.Word;
 import com.willautomate.profit.impl.BasicLetter;
 import com.willautomate.profit.impl.BasicWord;
+import com.willautomate.profit.impl.DoubleBinarizer;
 import com.willautomate.profit.neo4j.Neo4j;
 
 import org.slf4j.Logger;
@@ -35,25 +36,7 @@ public class WordProvider {
 
     private static final int SHIFT = 50;
     public static Letter getLetter(final int humbaHumba, final boolean main){
-        String connection = (main)?"MAIN":"LUCKY";
-        String query = String.format("match (n:Number)<-[:%s]-(l:Letter) where Id(l) = %s return n.value",connection, SHIFT+humbaHumba);
-        log.warn("LEttah: {}",query);
-        String letterResult = Neo4j.sendTransactionalCypherQuery(query);
-        log.warn("Letter: {}", letterResult);
-        List<String> nums = Splitter.on("row").omitEmptyStrings().trimResults().splitToList(letterResult);
-        Iterable<Double> transform = filter(transform(nums, new Function<String, Double>() {
-            @Override
-            public Double apply(String s) {
-                String no = CharMatcher.DIGIT.retainFrom(s);
-                if (! no.isEmpty())
-                    return new Double(no);
-                else return null;
-            }
-        }),Predicates.notNull());
-
-        log.warn("Letter: {}", transform);
-        Preconditions.checkState(! isEmpty(transform), "Letter is empty");
-        return new BasicLetter<Double>(toArray(transform,Double.class));
+        return LetterPool.getLetter(humbaHumba, main);
     }
     public static int getMaxWordSize(){
     	String query = "match (l:Letter {LATEST:true}) return Id(l)";

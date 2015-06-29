@@ -18,6 +18,7 @@ public class DoubleLetterDistance {
 		Arrays.sort(aData);
 		Double[] bData = DoubleBinarizer.debinarize(comparizonSize,((Letter<Double>) b).getRawData());
 		Arrays.sort(bData);
+		log.info("Comparing {} to {}",aData,bData);
 		double distance = 0;
 		boolean doIncrease = true;
 		for (int i=0; i<comparizonSize;i++){

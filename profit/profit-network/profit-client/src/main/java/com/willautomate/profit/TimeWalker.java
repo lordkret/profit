@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import com.willautomate.profit.api.Letter;
 import com.willautomate.profit.api.Word;
+import com.willautomate.profit.impl.BasicLetter;
+import com.willautomate.profit.impl.DoubleBinarizer;
 import com.willautomate.profit.impl.DoubleLetterDistance;
 
 public class TimeWalker implements Runnable {
@@ -19,20 +21,21 @@ public class TimeWalker implements Runnable {
 	public void run() {
 		 boolean keepItGoing = true;
 		 boolean wordDone = false;
-		 int currentSize = 2;
+		 int currentSize = 4;
 		 Word word;
 		 
 		while (keepItGoing){
 			log.info("Fetching word with size {}",currentSize);
 			word = WordProvider.getWord(currentSize, main);
 			int letterSize = word.getLetters()[0].getRawData().length;
-			network = new ElmanWordDetector(letterSize);	
+			log.info("Size of the letter {} ",letterSize);
+			network = new ElmanWordDetector(5);	
 			if (network.train(word)){
 				log.info("Training finished");
-				Letter predicted = network.predict(WordProvider.getLetter(currentSize, main));
-				log.info("Predicted {} letter",predicted);
-				Letter toPredict = WordProvider.getLetter(currentSize+1, main);
-				double calculatedDistance = DoubleLetterDistance.calculate(toPredict, predicted, letterSize);
+				Letter<Double> predicted = (Letter<Double>) network.predict(WordProvider.getLetter(currentSize, main));
+				log.info("Predicted letter {} or {}",DoubleBinarizer.debinarize(5, predicted.getRawData()),predicted);
+				Letter<Double> toPredict = WordProvider.getLetter(currentSize+1, main);
+				double calculatedDistance = DoubleLetterDistance.calculate(toPredict,predicted, 5);
 				wordDone = distance >= calculatedDistance;
 				log.info("Distance to {} is {}", toPredict,calculatedDistance);
 			}
@@ -40,7 +43,7 @@ public class TimeWalker implements Runnable {
 			if (! wordDone){
 				log.info("This network seems to be useless, restarting");
 				network.clean();
-				currentSize=2;
+				currentSize=4;
 			} else {
 				currentSize++;
 			}
