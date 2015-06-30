@@ -14,9 +14,10 @@ import com.willautomate.profit.impl.DoubleLetterDistance;
 public class TimeWalker implements Runnable {
 	
 	private ElmanWordDetector network;
-	private static final Logger log = LoggerFactory.getLogger(WordWalker.class);
+	private static final Logger log = LoggerFactory.getLogger(TimeWalker.class);
 	private boolean main = true;
 	private double distance = 0;
+	private int maxWordSize = WordProvider.getMaxWordSize();
 	@Override
 	public void run() {
 		 boolean keepItGoing = true;
@@ -31,17 +32,17 @@ public class TimeWalker implements Runnable {
 			log.info("Size of the letter {} ",letterSize);
 			network = new ElmanWordDetector(5);	
 			if (network.train(word)){
-				log.info("Training finished");
+				log.warn("Training with word size {} finished",currentSize);
 				Letter<Double> predicted = (Letter<Double>) network.predict(WordProvider.getLetter(currentSize, main));
-				log.info("Predicted letter {} or {}",DoubleBinarizer.debinarize(5, predicted.getRawData()),predicted);
+				log.warn("Predicted letter {} ",DoubleBinarizer.debinarize(5, predicted.getRawData()),predicted);
 				Letter<Double> toPredict = WordProvider.getLetter(currentSize+1, main);
 				double calculatedDistance = DoubleLetterDistance.calculate(toPredict,predicted, 5);
 				wordDone = distance >= calculatedDistance;
-				log.info("Distance to {} is {}", toPredict,calculatedDistance);
+				log.warn("Distance to {} is {}", DoubleBinarizer.debinarize(5,toPredict.getRawData()),calculatedDistance);
 			}
-			keepItGoing = ! wordDone && WordProvider.getMaxWordSize() > currentSize;
+			keepItGoing = ! wordDone &&  maxWordSize > currentSize;
 			if (! wordDone){
-				log.info("This network seems to be useless, restarting");
+				log.warn("This network seems to be useless, restarting");
 				network.clean();
 				currentSize=4;
 			} else {

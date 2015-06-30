@@ -17,14 +17,14 @@
   </appender>
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>testFile.log</file>
-    <append>true</append>
+    <append>false</append>
     <!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
       <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
     </encoder>
   </appender>
-  <root level="INFO">
+  <root level="WARN">
     <appender-ref ref="defaultLog"/>
   	<appender-ref ref="FILE"/>
   </root>
