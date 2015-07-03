@@ -5,6 +5,10 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -54,6 +58,27 @@ public class Neo4j {
 		String payload = "{\"statements\" : [ {\"statement\" : \"" +query.replaceAll("\"","\\\\\"") + "\"} ]}";
 
 		return sendQuery(payload);
+	}
+	
+	//This method was for 1 use only
+	private static void addLetterId(){
+		String neo4jAnswer = Neo4j.sendTransactionalCypherQuery("match (l:Letter) return Id(l) order by Id(l)");
+		log.info(neo4jAnswer);
+		
+			JsonElement el = new JsonParser().parse(neo4jAnswer);
+			JsonArray data = el.getAsJsonObject().
+					get("results")
+					.getAsJsonArray().get(0)
+					.getAsJsonObject().get("data")
+					.getAsJsonArray();
+			for (int i=0;i<data.size();i++){
+					String result = data.get(i)
+					.getAsJsonObject().get("row")
+					.getAsJsonArray().get(0)
+					.getAsString();
+					sendTransactionalCypherQuery(String.format("match (l:Letter) where Id(l) = %s set l.letterId = %s",result,i+1));
+			}
+	
 	}
 
 }

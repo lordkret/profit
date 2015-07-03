@@ -23,4 +23,8 @@ public class DataSlurperTest {
 		System.out.println(DataSlurper.createLetter(uri));
 		}
 	}
+	
+	@Test public void testLetterId(){
+		System.out.println(DataSlurper.getLetterId());
+	}
 }

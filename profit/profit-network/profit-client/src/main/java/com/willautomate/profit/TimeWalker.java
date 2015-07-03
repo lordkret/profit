@@ -15,14 +15,16 @@ public class TimeWalker implements Runnable {
 	
 	private ElmanWordDetector network;
 	private static final Logger log = LoggerFactory.getLogger(TimeWalker.class);
-	private boolean main = true;
+	private boolean main = false;
 	private double distance = 0;
 	private int maxWordSize = WordProvider.getMaxWordSize();
+	private static final int DEFAULT_BEGIN = WordProvider.getMaxWordSize();	
 	@Override
 	public void run() {
 		 boolean keepItGoing = true;
 		 boolean wordDone = false;
-		 int currentSize = 4;
+		 int currentSize = DEFAULT_BEGIN;
+		 int debinarizedLetterSize = (main)?5:2;
 		 Word word;
 		 
 		while (keepItGoing){
@@ -30,21 +32,26 @@ public class TimeWalker implements Runnable {
 			word = WordProvider.getWord(currentSize, main);
 			int letterSize = word.getLetters()[0].getRawData().length;
 			log.info("Size of the letter {} ",letterSize);
-			network = new ElmanWordDetector(5);	
+			network = new ElmanWordDetector(debinarizedLetterSize);	
 			if (network.train(word)){
 				log.warn("Training with word size {} finished",currentSize);
 				Letter<Double> predicted = (Letter<Double>) network.predict(WordProvider.getLetter(currentSize, main));
-				log.warn("Predicted letter {} ",DoubleBinarizer.debinarize(5, predicted.getRawData()),predicted);
+				log.warn("Predicted letter {} or {}",DoubleBinarizer.debinarize(debinarizedLetterSize, predicted.getRawData()),predicted);
 				Letter<Double> toPredict = WordProvider.getLetter(currentSize+1, main);
-				double calculatedDistance = DoubleLetterDistance.calculate(toPredict,predicted, 5);
+				try {
+				double calculatedDistance = DoubleLetterDistance.calculate(toPredict,predicted, debinarizedLetterSize);
 				wordDone = distance >= calculatedDistance;
-				log.warn("Distance to {} is {}", DoubleBinarizer.debinarize(5,toPredict.getRawData()),calculatedDistance);
+				log.warn("Distance to {} is {}", DoubleBinarizer.debinarize(debinarizedLetterSize,toPredict.getRawData()),calculatedDistance);
+				} catch (IllegalArgumentException sit){
+					log.info("this network produced strange letter");
+					wordDone = false;
+				}
 			}
-			keepItGoing = ! wordDone &&  maxWordSize > currentSize;
+			keepItGoing = maxWordSize > currentSize;
 			if (! wordDone){
 				log.warn("This network seems to be useless, restarting");
 				network.clean();
-				currentSize=4;
+				currentSize=DEFAULT_BEGIN;
 			} else {
 				currentSize++;
 			}

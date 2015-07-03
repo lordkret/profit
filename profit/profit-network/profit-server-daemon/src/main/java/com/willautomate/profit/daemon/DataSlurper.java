@@ -24,6 +24,7 @@ import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.willautomate.profit.neo4j.Neo4j;
 public class DataSlurper {
 
 	public static final String BEGGINING_OF_TIME = "10-05-2011";
@@ -112,7 +113,7 @@ public class DataSlurper {
 			+ "(l1:Number {value:<l1>}),"
 			+ "(l2:Number {value:<l2>}) "
 			+ "remove prev.LATEST "
-			+ "create (n:Letter {LATEST:true, date:\"<date>\", hadWinner:<winner>}) "
+			+ "create (n:Letter {LATEST:true, date:\"<date>\", hadWinner:<winner>, letterId:<letterId>}) "
 			+ "create (n)-[:MAIN {order:1}]->(m1) "
 			+ "create (n)-[:MAIN {order:2}]->(m2) "
 			+ "create (n)-[:MAIN {order:3}]->(m3) "
@@ -122,6 +123,13 @@ public class DataSlurper {
 			+ "create (n)-[:LUCKY {order:2}]->(l2) "
 			+ "create (n)-[:PREVIOUS]->(prev) "
 			+ "return Id(n) ";
+	
+	public static String getLetterId(){
+		String letterId = Neo4j.sendTransactionalCypherQuery("match (l:Letter {LATEST:true}) return l.letterId");
+		String result = DataVomiter.getFirstRestult(letterId);
+		log.info(result);
+		return String.valueOf(new Integer(result) +1); 
+	}
 	public static String createLetter(String uri){
 		ST letterTemplate = new ST(LETTER_TEMPLATE);
 		String date = Iterables.getLast(Splitter.on("/").omitEmptyStrings().split(uri));
@@ -136,7 +144,8 @@ public class DataSlurper {
 		.add("m5", nums.get(4))
 		.add("l1", nums.get(5))
 		.add("l2", nums.get(6))
-		.add("date",date);
+		.add("date",date)
+		.add("letterId",getLetterId());
 		return letterTemplate.render();
 	}
 

@@ -13,11 +13,11 @@ public class TimeWalkerTest {
 	@Test
 	public void test() throws Exception {
 		Beemo.register();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 100000; i++) {
 			wordSerice.execute(new TimeWalker());
 			
 		}
-		wordSerice.awaitTermination(15, TimeUnit.HOURS);
+		wordSerice.awaitTermination(29, TimeUnit.HOURS);
 		
 		Beemo.unregister();
 		
